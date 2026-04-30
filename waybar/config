@@ -1,0 +1,211 @@
+{
+  "layer": "top",
+  "position": "top",
+  "reload_style_on_change": true,
+  "spacing": 13, 
+  "modules-left": ["custom/notification", "hyprland/workspaces"],
+  "modules-center": ["hyprland/window"],
+  "modules-right": ["clock", "tray", "power-profiles-daemon", "pulseaudio", "pulseaudio/slider", "backlight", "battery"],
+  "hyprland/submap": {
+      "format": "✌️  Mode: {}",
+      "max-length": 20,
+      "tooltip": false
+  },
+  "hyprland/workspaces": {
+      "format": "{icon}",
+      "format-icons": {
+          "active": "",
+          "default": "",
+          "empty": ""
+      },
+      "persistent-workspaces": {
+          "*": [ 1,2,3,4,5 ]
+      }
+  },
+  "hyprland/window": {
+    "format": "{title}",
+    "rewrite": {
+      "tmx2": "terminal - tmux",
+      "(.*) - Google chrome": "🌎 $1",
+      "(.*)czcollier2.c.googlers.com.*": "<span color='#ff4a83'></span>  $1",
+    }
+  },
+  "custom/notification": {
+      "tooltip": false,
+      "format": "",
+      "on-click": "swaync-client -t -sw",
+      "escape": true
+  },
+  "clock": {
+    "format": "{:%r  %a %d %B, %Y   wk%V}",
+    "tooltip-format": "<span style='oblique'>{calendar}</span>",
+
+  "calendar": {
+    "mode"          : "year",
+    "mode-mon-col"  : 3,
+    "weeks-pos"     : "right",
+    "on-scroll"     : 1,
+    "format": {
+      "months":     "<span color='#ffead3'>{}</span>",
+      "days":       "<span color='#ecc6d9'>{}</span>",
+      "weeks":      "<span color='#99ffdd'>W{}</span>",
+      "weekdays":   "<span color='#ffcc66'>{}</span>",
+      "today":      "<span color='#ff6699'><u>{}</u></span>"
+      }
+    }
+  },
+  "custom/keybinds": {
+      "format": "⌨️",
+      "exec": "~/.config/hypr/scripts/keybinds.sh",
+      "return-type": "json",
+      "interval": "once",
+      "signal": 10
+  },
+  "network": {
+      "format-wifi": "",
+      "format-ethernet":"",
+      "format-disconnected": "",
+      "tooltip-format-disconnected": "Error",
+      "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
+      "tooltip-format-ethernet": "{ifname} 🖧 ",
+      "on-click": "nm-connection-editor"
+  },
+  "bluetooth": {
+      "format-on": "󰂯",
+      "format-off": "BT-off",
+      "format-disabled": "󰂲",
+      "format-connected-battery": "{device_battery_percentage}% 󰂯",
+      "format-alt": "{device_alias} 󰂯",
+      "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+      "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+      "tooltip-format-enumerate-connected": "{device_alias}\n{device_address}",
+      "tooltip-format-enumerate-connected-battery": "{device_alias}\n{device_address}\n{device_battery_percentage}%",
+      "on-click": "blueman-manager",
+  }, 
+  "battery": {
+      "interval":30,
+      "states": {
+          "good": 95,
+          "warning": 30,
+          "critical": 20
+      },
+      "format": "{capacity}% {icon}",
+      "format-charging": "{capacity}% 󰂄",
+      "format-plugged": "{capacity}% 󰂄 ",
+      "format-alt": "{time} {icon}",
+      "format-icons": [
+          "󰁻",
+      "󰁼",
+      "󰁾",
+      "󰂀",
+      "󰂂",
+      "󰁹"
+      ],
+  },
+  "power-profiles-daemon": {
+    "format": "{icon}",
+    "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+    "tooltip": true,
+    "format-icons": {
+      "default": "",
+      "performance": "",
+      "balanced": "",
+      "power-saver": ""
+    }
+  },
+  "pulseaudio": {
+    "reverse-scrolling": true,
+    "reverse-mouse-scrolling": true,
+    "format": "{volume}% {icon}",
+    "format-bluetooth": "{volume}% {icon} ",
+    "format-muted": "0% 󰝟",
+    "format-icons": {
+        "headphone": "",
+        "default": ["󰕿", "󰖀", "󰕾"] 
+    },
+    "on-click": "~/.config/hypr/scripts/toggle_app.sh pavucontrol org.pulseaudio.pavucontrol audio"
+  },
+  "pulseaudio/slider": {
+      "min": 0,
+      "max": 100,
+      "orientation": "horizontal"
+  },
+  "backlight": {
+      "reverse-scrolling": true,
+      "reverse-mouse-scrolling": true,
+      "device": "intel_backlight",
+      "format": "{icon}   {percent}%",
+      "format-icons": ["󰃞", "󰃟", "󰃠"],
+      "on-scroll-up": "brightnessctl set 1%+",
+      "on-scroll-down": "brightnessctl set 1%-"
+  },
+  "custom/expand": {
+      "format": "",
+      "tooltip": false
+  },
+  "custom/endpoint":{
+      "format": "|",
+      "tooltip": false
+  },
+  "group/expand": {
+      "orientation": "horizontal",
+      "drawer": {
+          "transition-duration": 600,
+          "transition-to-left": true,
+          "click-to-reveal": true
+      },
+      "modules": ["custom/expand", "custom/colorpicker"],
+  },
+  "custom/colorpicker": {
+      "format": "{}",
+      "return-type": "json",
+      "interval": "once",
+      "exec": "~/.config/waybar/scripts/colorpicker.sh -j",
+      "on-click": "~/.config/waybar/scripts/colorpicker.sh",
+      "signal": 1
+  },
+  "cpu": {
+      "interval": 2,
+      "format": "{icon}   {usage}%", // Shows both icon and percentage
+      // Or use just "{icon}" for a purely graphical look
+      "format-icons": ["", "", "", "", ""], 
+      // Example using "Vertical Bars" for a mini-graph look:
+      // "format-icons": [" ", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+      "states": {
+          "warning": 70,
+          "critical": 90
+      }
+  },
+  "memory": {
+      "format": ""
+  },
+  "temperature": {
+      "critical-threshold": 80,
+      "format": "",
+  },
+  "tray": {
+      "icon-size": 16,
+      "spacing": 10,
+  },
+  "wlr/taskbar": {
+      "format": "{icon}",
+      "icon-size": 14,
+      "icon-theme": "Numix-Circle",
+      "tooltip-format": "{title}",
+      "on-click": "activate",
+      "on-click-middle": "close",
+      "ignore-list": [
+         "Alacritty"
+      ],
+      "app_ids-mapping": {
+        "firefoxdeveloperedition": "firefox-developer-edition"
+      },
+      "rewrite": {
+          "Firefox Web Browser": "Firefox",
+          "Foot Server": "Terminal",
+          ".*(steam_app_[0-9]+).*": "Game"
+
+      }
+  }
+} 
+
