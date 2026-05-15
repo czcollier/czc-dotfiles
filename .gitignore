@@ -1,0 +1,8 @@
+**/*
+!.gitignore
+!foot/
+!home-manager/
+!hypr/
+!nix/nix.conf
+!nvim/init.lua
+!waybar/
