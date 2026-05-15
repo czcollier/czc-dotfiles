@@ -1,6 +1,5 @@
 -- ~/.config/hypr/hyprland.lua
 
-
 local function get_lid_state()
     local f = io.open("/proc/acpi/button/lid/LID/state", "r")
     if not f then return "unknown" end
@@ -251,7 +250,7 @@ hl.window_rule {
       class = "^xdg-desktop-portal-gtk$"
     },
     float = true,
-    size = "{900, 700}"
+    size = "900 700"
 }
 
 hl.window_rule {
@@ -260,7 +259,7 @@ hl.window_rule {
       class = "org.gnome.Loupe"
     },
     float = true,
-    size = "{900, 700}"
+    size = "900 700"
 }
 
 hl.window_rule {
@@ -269,9 +268,31 @@ hl.window_rule {
       class = "org.gnome.Nautilus"
     },
     float = true,
-    size = "{900, 700}"
+    size = "900 700"
 }
 
+hl.window_rule {
+    name = "upload_auth",
+    match = {
+      class = "chrome-pmhkaepabdniocnppdkfgifgonahhpdi-Profile_2"
+    },
+    float = true,
+    fullscreen = false,
+    --suppress_event = "fullscreen maximize",
+    --fullscreen_state = "0 0",
+    --maximize = false,
+    size = "600 670"
+}
+
+hl.layer_rule {
+  name = "noctalia",
+  match = {
+    namespace = "noctalia-background-.*$"
+  },
+  ignore_alpha = 0.5,
+  blur = true,
+  blur_popups = true
+}
 -- ==========================================
 -- Bindings
 -- ==========================================
