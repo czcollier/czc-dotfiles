@@ -3,21 +3,27 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    quickshell.url = "github:quickshell-mirror/quickshell";
-     noctalia = {
+    hyprland.url = "github:hyprwm/Hyprland/v0.55.0";
+    hyprpanel.url = "github:Jas-SinghFSU/HyprPanel/master";
+    nix-gl-host.url = "github:numtide/nix-gl-host";
+    ashell.url = "github:MalpenZibo/ashell";
+
+    quickshell = {
+      url = "github:quickshell-mirror/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     }; 
     # This line tells quickshell: "Don't use your own nixpkgs, use mine."
-    quickshell.inputs.nixpkgs.follows = "nixpkgs";
+    
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hyprland.url = "github:hyprwm/Hyprland";
-    hyprpanel.url = "github:Jas-SinghFSU/HyprPanel/master";
-    nix-gl-host.url = "github:numtide/nix-gl-host";
-    ashell.url = "github:MalpenZibo/ashell";
+    
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
@@ -54,7 +60,8 @@
             home.packages = [ 
               self.packages.${system}.default
               noctalia.packages.${system}.default
-              pkgs.hyprland
+              #pkgs.hyprland
+              inputs.hyprland.packages.${system}.hyprland
               nix-gl-host.defaultPackage.${system}
               hyprpanel.packages.${system}.default
               pkgs.dart-sass

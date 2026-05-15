@@ -53,6 +53,9 @@ clamshell_logic() {
 # Listener handle for socket events
 handle() {
     case $1 in
+        configreloaded*)
+            clamshell_logic
+            ;;
         monitoradded*)
             sleep 1 # Wait for hardware handshake
             clamshell_logic # Check if we should disable eDP-1 immediately

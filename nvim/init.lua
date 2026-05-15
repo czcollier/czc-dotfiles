@@ -50,7 +50,7 @@ require("lazy").setup({
      config = function()
        local configs = require("nvim-treesitter.config")
        configs.setup({
-         ensure_installed = { 
+         ensure_installed = {
            'bash', 'c', 'cpp', 'glsl', 'lua', 'java', 'python', 'vim', 'vimdoc', 'query', 'javascript', 'html' 
          },
          highlight = { enable = true },
@@ -72,7 +72,6 @@ require("lazy").setup({
 
 vim.o.guifont = "Cousine Nerd Font:h10"
 --vim.cmd [[colorscheme catppuccin-mocha]]
-vim.g.neovide_transparency = 0.93
 vim.cmd [[
   highlight Normal guibg=none
   highlight NonText guibg=none
@@ -81,15 +80,18 @@ vim.cmd [[
 ]]
 
 
-vim.keymap.set({'n', 'v'}, 'x', '"_x', { noremap = true })
-vim.keymap.set({'n', 'v'}, 'X', '"_X', { noremap = true })
-vim.keymap.set({'n', 'v'}, '<leader>d', '"_d', { noremap = true })
+-- vim.keymap.set({'n', 'v'}, 'x', '"_x', { noremap = true })
+-- vim.keymap.set({'n', 'v'}, 'X', '"_X', { noremap = true })
+-- vim.keymap.set({'n', 'v'}, '<leader>d', '"_d', { noremap = true })
 
 vim.opt.termguicolors = true
 
 if vim.g.neovide then
+  vim.g.neovide_opacity = 1.0
   vim.g.neovide_padding_top = 10
   vim.g.neovide_padding_bottom = 10
   vim.g.neovide_padding_right = 10
   vim.g.neovide_padding_left = 10
+  --vim.g.neovide_background_color = "#f8f8f2"
+  vim.api.nvim_set_hl(0, "Normal", { fg = "#d8d8f2", bg = "#011627" })
 end

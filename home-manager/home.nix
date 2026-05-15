@@ -16,12 +16,19 @@
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
-    package = pkgs.hyprland;
+    #package = pkgs.hyprland;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     extraConfig = ''
       source = ~/.config/hypr/czc-hyprland.conf
     '';
     plugins = [
-      inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprbars
+      #inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
+      #(inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprbars.overrideAttrs (oldAttrs: {
+      #  postPatch = (oldAttrs.postPatch or "") + ''
+      #     # Find barDeco.cpp regardless of the build root and comment out the broken lines
+      #    sed -i 's/.*configStringToInt.*/\/\/ bypassed broken upstream API/g' $(find . -name "barDeco.cpp" -o -name "main.cpp")
+      #  '';
+      #}))
     ];
     # Optional: You can put your hyprland.conf logic directly here later
     # settings = { ... }; 
