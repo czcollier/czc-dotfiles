@@ -2,7 +2,8 @@
 !.gitignore
 !foot/
 !home-manager/
-!hypr/
+!hypr
+!hypr/*.lua
 !nix/nix.conf
 !nvim/init.lua
 !waybar/
