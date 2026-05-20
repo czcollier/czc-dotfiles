@@ -6,6 +6,8 @@
 !hypr/*.lua
 !hypr/scripts/
 !hypr/scripts/*.lua
+!hypr/shaders/
+!hypr/shaders/*.frag
 !hypr/lib/
 !hypr/lib/*.lua
 !nix/nix.conf
