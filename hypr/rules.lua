@@ -62,6 +62,13 @@ hl.window_rule {
     size = "600 670"
 }
 
+--hl.window_rule {
+--  name = "code"
+--  match = {
+--     
+--  }
+--}
+
 hl.layer_rule {
   name = "noctalia",
   match = {

@@ -36,18 +36,16 @@ void main() {
         message = (pct == 0) and "Monochrome" or string.format("Sat %d%%", pct)
     end
 
-    -- Apply changes natively using whatever environment is calling it
     if hl and hl.config then
-        -- We are running INSIDE Hyprland's resident memory loop
         hl.config({ decoration = { screen_shader = active_shader } })
-        hl.notification.create({ text = message, timeout = 400, icon = "hint" })
+        local cmd = string.format([[noctalia-shell ipc call toast send '{"title": "Saturation", "body": "%s", "duration": 800}']], message)
+        hl.exec_cmd(cmd)
         hl.exec_cmd("hyprctl dispatch damage")
         hl.exec_cmd("hyprctl dispatch workspace +0")
     else
         -- We are running OUTSIDE in a terminal shell; serialize a string payload back to hyprctl
         local payload = string.format([[
             hl.config({ decoration = { screen_shader = "%s" } })
-            hl.notification.create({ text = "%s", timeout = 1500, icon = "hint" })
             hl.exec_cmd("hyprctl dispatch damage")
             hl.exec_cmd("hyprctl dispatch workspace +0")
         ]], active_shader, message)

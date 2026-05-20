@@ -18,7 +18,7 @@ void main() {
     
     // Laplacian edge weight calculation
     // Sharpness factor (0.25 is perfect for clear terminal text without creating artifacts)
-    float amount = 0.25;
+    float amount = 0.22;
     vec3 sharpened = center + (center * 4.0 - top - bottom - left - right) * amount;
     
     fragColor = vec4(clamp(sharpened, 0.0, 1.0), texture(tex, v_texcoord).a);
