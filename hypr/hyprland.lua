@@ -1,12 +1,13 @@
 -- ~/.config/hypr/hyprland.lua
-
 local brightness = require("brightness")
 local lid = require("lid")
 local general = require("general_config")
 local binds = require("binds")
 local rules = require("rules")
 local animation = require("animation")
+local gestures = require("gestures")
 
+local power_profile = require("power_profile")
 -- Monitor configuration
 local lid_state = lid.get_lid_state()
 lid.handle_switch(lid_state)
@@ -29,6 +30,8 @@ hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
 
+--hl.dsp.exec_cmd("hyprctl plugin load /home/czcollier/.nix-profile/lib/libHyprspace.so")
+
 -- ==========================================
 -- Startup
 -- ==========================================
@@ -47,9 +50,10 @@ hl.on("hyprland.start", function ()
   ":/usr/share:$HOME/.local/state/nix/profiles/profile/share:$XDG_DATA_DIRS noctalia-shell")
   
   hl.exec_cmd("wl-paste --watch cliphist store")
+  --local hyprspace = hl.plugin.load("~/.nix-profile/lib/libHyprspace.so")
+  --local hyprfocus = hl.plugin.load("~/.nix-profile/lib/libhyprfocus.so")
 end)
 
-
 hl.on("config.reloaded", function(w)
-  hl.notification.create({ text = "config reloaded: ", timeout = 1000, icon = "ok" })
+  hl.notification.create({ text = "config reloaded: ", timeout = 500, icon = "ok" })
 end)

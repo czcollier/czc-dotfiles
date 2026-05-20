@@ -1,3 +1,6 @@
+active_border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
+inactive_border_color = { colors = { "rgba(272727bb)" } }
+
 hl.config({
     input = {
         kb_layout = "us",
@@ -14,15 +17,15 @@ hl.config({
         gaps_out = 10,
         border_size = 2,
         col = {
-            active_border   = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 },
-            inactive_border = "rgba(77777766)"
+          active_border = active_border_color,
+          inactive_border = inactive_border_color
         },
         layout = "dwindle",
         resize_on_border = true
     },
 
     layout = {
-      single_window_aspect_ratio = { 1, 1 }
+      single_window_aspect_ratio = { 9, 8 }
     },
     cursor = {
       zoom_factor = 1.0,
@@ -32,8 +35,8 @@ hl.config({
     decoration = {
         rounding = 8,
         rounding_power = 2,
-        active_opacity = 0.9,
-        inactive_opacity = 0.9,
+        active_opacity = 0.95,
+        inactive_opacity = 0.95,
         dim_around = 1.0,
         shadow = {
             enabled = true,
@@ -49,6 +52,11 @@ hl.config({
             vibrancy = 0.1696,
             new_optimizations = true,
             brightness = 0.95
+        },
+        glow = {
+          enabled = false, 
+          render_power = 4,
+          range = 30,
         }
     },
     animations = {
@@ -64,14 +72,19 @@ hl.config({
         always_keep_position = true
     },
     scrolling = {
-        column_width = 0.5
+        column_width = 0.5,
+        wrap_focus = true,
+        fullscreen_on_one_column = true,
+        explicit_column_widths = "1, 0.5",
+        focus_fit_method = 1,
+        follow_min_visible = 1.0
     },
    group = {
         col = {
-            border_active = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 },
-            border_inactive = "rgba(59595999)",
-            border_locked_active = { colors = { "rgba(dd9999ee)", "rgba(dd6699ee)" } },
-            border_locked_inactive = "rgba(59595999)",
+            border_active = active_border_color,--border_active = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 },
+            border_inactive = inactive_border_color,
+            border_locked_active = { colors = { "rgba(dd9999ee)", "rgba(dd6699ee)", angle = 45 } },
+            border_locked_inactive = inactive_border_color,
 
         },
         insert_after_current = true,
@@ -82,17 +95,17 @@ hl.config({
             render_titles = true,
             gradients = true,
             gradient_rounding = 8,
-            font_family = "Consolas",
+            font_family = "Cousine Nerd Font Mono",
             indicator_gap = 2,
             height = 24,
             indicator_height = 0,
             gradient_round_only_edges = true,
             font_size = 12,
-            text_color = "rgba(eeee00ff)",
-            text_color_inactive = "rgba(999999ff)",
+            text_color = "rgba(eeeeeeff)",
+            text_color_inactive = "rgba(171717ff)",
             col = {
-                active = { colors = { "rgba(252525ee)", "rgba(252525aa)", "rgba(25252588)"  } },
-                inactive = { colors = { "rgba(59595955)", "rgba(59595933)", "rgba(59595911)" } },
+                active = { colors = { "rgba(171717cc)", "rgba(171717cc)", "rgba(171717aa)"  } },
+                inactive = { colors = { "rgba(595959cc)", "rgba(595959cc)", "rgba(595959aa)" } },
                 locked_active = { colors = { "rgba(353555ee)", "rgba(353555aa)", "rgba(35355588)"  } },
                 locked_inactive = { colors = { "rgba(59595955)", "rgba(59595933)", "rgba(59595911)" } },
             },
@@ -106,10 +119,15 @@ hl.config({
         force_default_wallpaper = 0,
         disable_hyprland_logo = true
     },
-
     render = {
         direct_scanout = 1,
         cm_auto_hdr = 1,
         cm_enabled = true
-    }
+    },
+    --  plugin = {
+    --    hyprfocus = {
+    --      mode = "shrink",
+    --      fade_opacity = 0.91,
+    --    }
+    --  },
 })

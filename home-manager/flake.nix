@@ -25,12 +25,24 @@
     };
     
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
+      url = "github:hyprwm/hyprland-plugins/v0.55.0";
       inputs.hyprland.follows = "hyprland";
     };
-  };
 
-  outputs = { self, nixpkgs, home-manager, hyprpanel, nix-gl-host, ashell, quickshell, noctalia, ... }@inputs: 
+    hyprspace = {
+      # url = "github:wochb/Hyprspace/v0.55.0";
+      url = "git+https://github.com/colonelpanic8/Hyprspace.git?ref=codex/defer-hyprspace-initial-reload";
+      #url = "github:colonelpanic8/Hyprspace/defer-hyprspace-initial-reload";
+      inputs.hyprland.follows = "hyprland";
+    };
+
+    hypr-dynamic-cursors = {
+        url = "github:VirtCode/hypr-dynamic-cursors";
+        inputs.hyprland.follows = "hyprland";
+    };
+};
+
+  outputs = { self, nixpkgs, home-manager, hyprpanel, nix-gl-host, ashell, quickshell, noctalia, hyprland-plugins, hyprspace, hypr-dynamic-cursors, ... }@inputs: 
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -60,7 +72,6 @@
             home.packages = [ 
               self.packages.${system}.default
               noctalia.packages.${system}.default
-              #pkgs.hyprland
               inputs.hyprland.packages.${system}.hyprland
               nix-gl-host.defaultPackage.${system}
               hyprpanel.packages.${system}.default
@@ -68,6 +79,7 @@
               pkgs.libnotify
               pkgs.swww
               pkgs.bibata-cursors
+              pkgs.rose-pine-hyprcursor
               ashell.packages.${system}.default
             ];
 

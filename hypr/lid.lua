@@ -31,7 +31,7 @@ function M.handle_switch(lid_state)
 
   hl.bind("switch:off:Lid Switch", function()
     hl.notification.create({ text = "lid open", timeout = 1000, icon = "ok" })
-    hl.monitor({ output = "eDP-1", mode = "preferred", scale = 1, position = "1920x0", scale = 2 })
+    hl.monitor({ output = "eDP-1", mode = "preferred", scale = 1.0, position = "1920x0", scale = 2 })
     os.execute("hyprctl reload")
   end, { locked = true })
 end

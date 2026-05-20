@@ -1,3 +1,5 @@
+local brightness = require("brightness")
+local saturation = require("lib/saturation")
 -- ==========================================
 -- Bindings
 -- ==========================================
@@ -11,28 +13,55 @@ hl.bind("CONTROL + SHIFT + M", hl.dsp.exec_cmd("/usr/bin/hyprlock"))
 hl.bind(mainMod .. " + ALT + T", hl.dsp.exec_cmd("~/.config/hypr/scripts/hdrop.sh foot -a foot_drop"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd('grim -g "$(slurp)" - | swappy -f -'))
 
-hl.bind(mainMod .. " + CTRL + ALT + M",
+hl.bind(mainMod .. " + CTRL + SHIFT + M",
   hl.dsp.exec_cmd(
     "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"),
     { long_press = true })
 
 hl.bind(mainMod .. " + SHIFT + CTRL + P", hl.dsp.exec_cmd("~/scripts/panelctl.sh toggle"))
 
--- Move/resize windows with mainMod + LMB, mainMod + SHIFT + LMB and dragging
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + SHIFT + mouse:272", hl.dsp.window.resize(), { mouse = true })
 
+
+-- Native function callbacks bound directly to your window environment keys!
+hl.bind(mainMod .. " + SHIFT + 1", function() saturation.set(100) end)
+hl.bind(mainMod .. " + SHIFT + 2", function() saturation.set(35) end)
+hl.bind(mainMod .. " + SHIFT + 3", function() saturation.set(0) end)
+
 -- Focus --
-hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
+
+hl.bind(mainMod .. "+ L", function()
+    local current_layout = hl.get_active_workspace().tiled_layout
+    if current_layout == "scrolling" then
+        hl.dispatch(hl.dsp.layout("focus right"))
+        --hl.dispatch(hl.dsp.focus({ direction = "right" }))
+    else
+      hl.dispatch(hl.dsp.focus({ direction = "right" }))
+    end
+end)
+
+hl.bind(mainMod .. "+ H", function()
+  local current_layout = hl.get_active_workspace().tiled_layout
+  if current_layout == "scrolling" then
+    hl.dispatch(hl.dsp.layout("focus left"))
+    --hl.dispatch(hl.dsp.focus({ direction = "left" }))
+  else
+    hl.dispatch(hl.dsp.focus({ direction = "left" }))
+  end
+end)
+
+hl.bind(mainMod .. "+ F", hl.dsp.layout("fit visible"))
+
+hl.bind(mainMod .. "+ MINUS", hl.dsp.layout("colresize -conf"))
+hl.bind(mainMod .. "+ EQUAL", hl.dsp.layout("colresize +conf"))
 
 hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.move({ direction = "left" }))
 hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({ direction = "right" }))
 hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({ direction = "down" }))
 hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({ direction = "up" }))
-
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd( "foot" ))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd( "gedit" ))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(ipc .. " launcher toggle"))
@@ -102,6 +131,16 @@ hl.bind("ALT + TAB", function()
   end
 end)
 
+local select_from_hidden = (function(ws_name)
+  sws = hl.get_workspace("special:" .. ws_name)
+  if not sws or not sws.windows then
+    hl.dispatch(hl.dsp.workspace.toggle_special(ws_name))
+  elseif sws.active then
+    hl.dispatch(hl.dsp.window.move({ workspace = "+0" }))
+  end
+  hl.dispatch(hl.dsp.submap("reset"))
+end)
+
 hl.define_submap("hdn2", function()
   hl.bind("ESCAPE", function()
     hl.dispatch(hl.dsp.workspace.toggle_special("hidden"))
@@ -112,29 +151,11 @@ hl.define_submap("hdn2", function()
   hl.bind("ALT + SHIFT + TAB", hl.dsp.focus({ direction = "left" }))
 
   hl.bind(mainMod .. " + RETURN", function()
-    sws = hl.get_workspace("special:hidden")
-    if not sws or not sws.windows then
-      hl.dispatch(hl.dsp.workspace.toggle_special("hidden"))
-    elseif sws.active then
-      hl.dispatch(hl.dsp.window.move({ workspace = "+0" }))
-    end
-    hl.dispatch(hl.dsp.submap("reset"))
+    select_from_hidden("hidden")
   end)
-end)
 
--- Special Hidden Workspace ---
-hl.bind(mainMod .. " + ALT + T", function()
-  --sws = hl.get_workspace("special:term")
-  --if sws and not sws.active then
-    hl.dispatch(hl.dsp.workspace.toggle_special("term"))
-    hl.dispatch(hl.dsp.submap("hdn_term"))
-  --end
-end)
-
-hl.define_submap("hdn_term", function()
-  hl.bind(mainMod .. " + ESCAPE", function()
-    hl.dispatch(hl.dsp.workspace.toggle_special("term"))
-    hl.dispatch(hl.dsp.submap("reset"))
+  hl.bind("mouse:272", function()
+    select_from_hidden("hidden")
   end)
 end)
 
@@ -184,3 +205,29 @@ hl.bind(mainMod .. " + BRACKETRIGHT", hl.dsp.window.set_prop({
   value = "1.0",
   relative = true
 })) 
+
+local memory_saturation = 100
+
+local function step_saturation(direction)
+    -- Calculate increments natively using our memory pointer
+    if direction == "up" then
+        memory_saturation = memory_saturation + 10
+    elseif direction == "down" then
+        memory_saturation = memory_saturation - 10
+    end
+
+    -- Keep values bounded between 0% and 100%
+    if memory_saturation > 100 then 
+        memory_saturation = 100 
+    elseif memory_saturation < 0 then 
+        memory_saturation = 0 
+    end
+
+    -- Hand the memory value straight to the library module
+    saturation.set(memory_saturation)
+end
+
+-- 2. Bind shortcuts cleanly using 0.55+ unified single-string syntax
+-- (Keeping repeating = true so it smoothly glides as you hold the combination)
+hl.bind("SUPER + XF86MonBrightnessUp", function() step_saturation("up") end, { repeating = true })
+hl.bind("SUPER + XF86MonBrightnessDown", function() step_saturation("down") end, { repeating = true })

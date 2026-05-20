@@ -7,16 +7,20 @@ hl.workspace_rule({
 
 hl.workspace_rule({
   workspace = "special:term",
-  layout = "scrolling",
-  gaps_in = "0",
-  gaps_out = "300",
+  -- layout = "scrolling",
+  -- gaps_in = "0",
+  -- gaps_out = "300",
   on_created_empty = "foot"
 })
 
 hl.workspace_rule({ workspace = "1", persistent = true })
 hl.workspace_rule({ workspace = "2", persistent = true })
 hl.workspace_rule({ workspace = "3", persistent = true })
-hl.workspace_rule({ workspace = "4", persistent = true })
+hl.workspace_rule({
+  workspace = "4",
+  persistent = true,
+  layout = "scrolling",
+})
 
 hl.window_rule {
     name = "system_dialogs",

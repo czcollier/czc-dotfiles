@@ -18,17 +18,11 @@
     xwayland.enable = true;
     #package = pkgs.hyprland;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    extraConfig = ''
-      source = ~/.config/hypr/czc-hyprland.conf
-    '';
     plugins = [
-      #inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
-      #(inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprbars.overrideAttrs (oldAttrs: {
-      #  postPatch = (oldAttrs.postPatch or "") + ''
-      #     # Find barDeco.cpp regardless of the build root and comment out the broken lines
-      #    sed -i 's/.*configStringToInt.*/\/\/ bypassed broken upstream API/g' $(find . -name "barDeco.cpp" -o -name "main.cpp")
-      #  '';
-      #}))
+      inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprbars
+      inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
+      inputs.hyprspace.packages.${pkgs.stdenv.hostPlatform.system}.Hyprspace
+      inputs.hypr-dynamic-cursors.packages.${pkgs.system}.hypr-dynamic-cursors
     ];
     # Optional: You can put your hyprland.conf logic directly here later
     # settings = { ... }; 
@@ -42,7 +36,11 @@
     hyprlock
     hyprpaper
     hyprutils
-    #nixGL is tricky; see the note below
+    # FORCE the actual plugin binaries to be installed into ~/.nix-profile/lib/
+    inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprbars
+    inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
+    inputs.hyprspace.packages.${pkgs.stdenv.hostPlatform.system}.Hyprspace
+    inputs.hypr-dynamic-cursors.packages.${pkgs.system}.hypr-dynamic-cursors
   ];
   #home.packages = [
     # # Adds the 'hello' command to your environment. It prints a friendly
@@ -94,10 +92,14 @@
   #
   #  /etc/profiles/per-user/czcollier/etc/profile.d/hm-session-vars.sh
   #
-  home.sessionVariables = {
-    # EDITOR = "emacs";
-  };
 
+home.sessionVariables = {
+    EDITOR = "vim";
+    # Interpolates the exact Nix store derivation outputs into persistent path variables
+    HYPRBARS_SO   = "${inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprbars}/lib/libhyprbars.so";
+    HYPRFOCUS_SO  = "${inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus}/lib/libhyprfocus.so";
+    HYPRSPACE_SO  = "${inputs.hyprspace.packages.${pkgs.stdenv.hostPlatform.system}.Hyprspace}/lib/libHyprspace.so";
+  };
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
