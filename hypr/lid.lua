@@ -29,7 +29,6 @@ function M.handle_switch(lid_state)
   end)
 
   hl.bind("switch:off:Lid Switch", function()
-    hl.exec_cmd(notify_cmd)
     hl.monitor({ output = "eDP-1", mode = "preferred", scale = 1.0, position = "1920x0", scale = 2 })
     os.execute("hyprctl reload")
     local notify_cmd = string.format( [[noctalia-shell ipc call toast send '{"title": "Lid", "body": "Open", "duration": 800}']])

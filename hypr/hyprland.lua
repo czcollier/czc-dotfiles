@@ -1,4 +1,3 @@
--- ~/.config/hypr/hyprland.lua
 local brightness = require("brightness")
 local lid = require("lid")
 local general = require("general_config")
@@ -6,12 +5,15 @@ local binds = require("binds")
 local rules = require("rules")
 local animation = require("animation")
 local gestures = require("gestures")
-
 local power_profile = require("power_profile")
 -- Monitor configuration
 local lid_state = lid.get_lid_state()
+-- check the lid state on reconfiguration/startup
 lid.handle_switch(lid_state)
 
+
+--local cursor_theme = "Bibata-Modern-Classic" 
+local cursor_theme = "RosePine-Hypr"
 -- ==========================================
 -- Environment Variables
 -- ==========================================
@@ -24,13 +26,14 @@ hl.env("WLR_NO_HARDWARE_CURSORS", "1")
 hl.env("PROTOCOL_TIMEOUT", "1")
 hl.env("PATH", os.getenv("HOME") .. "/.nix-profile/bin:" .. os.getenv("PATH"))
 hl.env("SSH_AUTH_SOCK", "/home/czcollier/.tmp/.czcollier.ssh_auth_sock")
-hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
-hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Classic")
-hl.env("XCURSOR_SIZE", "24")
-hl.env("HYPRCURSOR_SIZE", "24")
-hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
 
---hl.dsp.exec_cmd("hyprctl plugin load /home/czcollier/.nix-profile/lib/libHyprspace.so")
+hl.env("HYPRCURSOR_THEME", cursor_theme)
+hl.env("HYPRCURSOR_SIZE", "32")
+
+hl.env("XCURSOR_THEME", "Adwaita")
+hl.env("XCURSOR_SIZE", "24")
+
+hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
 
 -- ==========================================
 -- Startup
@@ -54,6 +57,3 @@ hl.on("hyprland.start", function ()
   --local hyprfocus = hl.plugin.load("~/.nix-profile/lib/libhyprfocus.so")
 end)
 
---hl.on("config.reloaded", function(w)
---  hl.notification.create({ text = "config reloaded: ", timeout = 500, icon = "ok" })
---end)

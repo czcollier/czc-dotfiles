@@ -77,6 +77,7 @@ hl.bind(mainMod .. " + SHIFT + Space", function()
   hl.dispatch(hl.dsp.window.center())
 end)
 
+hl.bind(mainMod .. " + SHIFT + P", hl.dsp.window.pseudo({ action = "toggle" }))
 --- Focus ---
 hl.bind(mainMod .. " + CTRL + H", hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(mainMod .. " + CTRL + L", hl.dsp.focus({ workspace = "e+1" }))

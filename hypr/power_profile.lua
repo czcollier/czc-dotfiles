@@ -17,10 +17,10 @@ local profile_timer = hl.timer(function()
     if current_profile ~= last_profile then
         last_profile = current_profile
         local notify_cmd = string.format(
-          [[noctalia-shell ipc call toast send '{"title": "Power MOde", "body": "%s", "duration": 800}']],
+          [[noctalia-shell ipc call toast send '{"title": "Power Mode", "body": "%s", "duration": 800}']],
           current_profile:gsub("^%l", string.upper))
         hl.exec_cmd(notify_cmd)
-        
+
         if current_profile == "low-power" then
             hl.config({
                 decoration = {
