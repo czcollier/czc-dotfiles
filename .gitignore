@@ -13,3 +13,5 @@
 !nix/nix.conf
 !nvim/init.lua
 !waybar/
+!noctalia/
+!noctalia/settings.json
