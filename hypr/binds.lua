@@ -141,9 +141,12 @@ local select_from_hidden = (function(ws_name)
   end
   hl.dispatch(hl.dsp.submap("reset"))
 end)
+hl.bind(mainMod .. " + RETURN", function()
+  select_from_hidden("hidden")
+end)
 
 hl.define_submap("hdn2", function()
-  hl.bind("ESCAPE", function()
+  hl.bind(mainMod .. " + ESCAPE", function()
     hl.dispatch(hl.dsp.workspace.toggle_special("hidden"))
     hl.dispatch(hl.dsp.submap("reset"))
   end)
@@ -155,7 +158,7 @@ hl.define_submap("hdn2", function()
     select_from_hidden("hidden")
   end)
 
-  hl.bind("mouse:272", function()
+  hl.bind(mainMod .. " + SHIFT + mouse:272", function()
     select_from_hidden("hidden")
   end)
 end)
@@ -225,14 +228,15 @@ local function step_saturation(direction)
     end
 
     -- Hand the memory value straight to the library module
-    saturation.set(memory_saturation)
+    saturation.set_saturation(memory_saturation)
 end
 
 -- 2. Bind shortcuts cleanly using 0.55+ unified single-string syntax
 -- (Keeping repeating = true so it smoothly glides as you hold the combination)
 hl.bind("SUPER + XF86MonBrightnessUp", function() step_saturation("up") end, { repeating = true })
 hl.bind("SUPER + XF86MonBrightnessDown", function() step_saturation("down") end, { repeating = true })
-
+-- Tap SUPER + SHIFT + N to instantly drop into amber monochrome mode at night!
+hl.bind("SUPER + SHIFT + N", function() saturation.toggle_night_mode() end)
 -- experimental text sharpener
 --hl.bind("SUPER + SHIFT + T", function() 
 --    hl.config({ 

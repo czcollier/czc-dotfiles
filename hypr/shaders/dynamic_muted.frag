@@ -6,7 +6,6 @@ uniform sampler2D tex;
 void main() {
     vec4 pixColor = texture(tex, v_texcoord);
     float gray = dot(pixColor.rgb, vec3(0.299, 0.587, 0.114));
-    // SAT_VALUE: 0.80
     vec3 mixedColor = mix(vec3(gray), pixColor.rgb, 0.80);
     fragColor = vec4(mixedColor, pixColor.a);
 }

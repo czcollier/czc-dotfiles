@@ -25,7 +25,7 @@ hl.config({
     },
 
     layout = {
-      single_window_aspect_ratio = { 9, 8 }
+      single_window_aspect_ratio = { 4, 3 }
     },
     cursor = {
       zoom_factor = 1.0,

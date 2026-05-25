@@ -1,21 +1,36 @@
--- ~/.config/hypr/libs/saturation.lua
 local M = {}
-local shader_path = os.getenv("HOME") .. "/.config/hypr/shaders/dynamic_muted.frag"
 
--- Core implementation function that actually alters the system state
-function M.set(pct)
-    local active_shader = ""
-    local message = ""
+local dynamic_shader = os.getenv("HOME") .. "/.config/hypr/shaders/dynamic_muted.frag"
+local night_shader   = os.getenv("HOME") .. "/.config/hypr/shaders/night_mode.frag"
 
-    if not pct or pct == 100 then
-        active_shader = ""
-        message = "Full Color"
+-- Global tracking variable for our active mode state
+M.mode = "color" -- "color", "muted", "night"
+M.current_pct = 100
+
+function M.apply_state(active_shader, message)
+    if hl and hl.config then
+        hl.config({ decoration = { screen_shader = active_shader } })
+        
+        -- Send a fast 500ms toast directly to Noctalia Shell's IPC framework
+        local cmd = string.format([[qs -c noctalia-shell ipc call toast send '{"title": "Display Profile", "body": "%s", "duration": 500}']], message)
+        hl.exec_cmd(cmd)
+        
+        hl.exec_cmd("hyprctl dispatch damage")
+        hl.exec_cmd("hyprctl dispatch workspace +0")
+    end
+end
+
+function M.set_saturation(pct)
+    if pct < 0 then pct = 0 elseif pct > 100 then pct = 100 end
+    M.current_pct = pct
+    
+    if pct == 100 then
+        M.mode = "color"
+        M.apply_state("", "Full Color (100%)")
     else
-        if pct < 0 then pct = 0 elseif pct > 100 then pct = 100 end
+        M.mode = "muted"
         local saturation = pct / 100
-
-        -- Generate the GLSL file on the fly
-        local file = io.open(shader_path, "w")
+        local file = io.open(dynamic_shader, "w")
         if file then
             file:write(string.format([[#version 300 es
 precision mediump float;
@@ -25,32 +40,26 @@ uniform sampler2D tex;
 void main() {
     vec4 pixColor = texture(tex, v_texcoord);
     float gray = dot(pixColor.rgb, vec3(0.299, 0.587, 0.114));
-    // SAT_VALUE: %.2f
     vec3 mixedColor = mix(vec3(gray), pixColor.rgb, %.2f);
     fragColor = vec4(mixedColor, pixColor.a);
-}]], saturation, saturation))
+}]], saturation))
             file:close()
         end
-
-        active_shader = shader_path
-        message = (pct == 0) and "Monochrome" or string.format("Sat %d%%", pct)
+        M.apply_state(dynamic_shader, string.format("Muted (%d%%)", pct))
     end
+end
 
-    if hl and hl.config then
-        hl.config({ decoration = { screen_shader = active_shader } })
-        local cmd = string.format([[noctalia-shell ipc call toast send '{"title": "Saturation", "body": "%s", "duration": 800}']], message)
-        hl.exec_cmd(cmd)
-        hl.exec_cmd("hyprctl dispatch damage")
-        hl.exec_cmd("hyprctl dispatch workspace +0")
+
+function M.toggle_night_mode()
+    if M.mode == "night" then
+        -- If already in night mode, restore whatever our previous slider percentage was
+        M.set_saturation(M.current_pct)
     else
-        -- We are running OUTSIDE in a terminal shell; serialize a string payload back to hyprctl
-        local payload = string.format([[
-            hl.config({ decoration = { screen_shader = "%s" } })
-            hl.exec_cmd("hyprctl dispatch damage")
-            hl.exec_cmd("hyprctl dispatch workspace +0")
-        ]], active_shader, message)
-        os.execute(string.format("hyprctl eval %q", payload))
+        M.mode = "night"
+        M.apply_state(night_shader, "Night Reading Mode (Sepia)")
     end
 end
 
 return M
+
+
