@@ -12,7 +12,7 @@ function M.apply_state(active_shader, message)
         hl.config({ decoration = { screen_shader = active_shader } })
         
         -- Send a fast 500ms toast directly to Noctalia Shell's IPC framework
-        local cmd = string.format([[qs -c noctalia-shell ipc call toast send '{"title": "Display Profile", "body": "%s", "duration": 500}']], message)
+        local cmd = string.format([[noctalia-shell ipc call toast send '{"title": "Saturation", "body": "%s", "duration": 500}']], message)
         hl.exec_cmd(cmd)
         
         hl.exec_cmd("hyprctl dispatch damage")
@@ -45,7 +45,7 @@ void main() {
 }]], saturation))
             file:close()
         end
-        M.apply_state(dynamic_shader, string.format("Muted (%d%%)", pct))
+        M.apply_state(dynamic_shader, string.format("%d%%", pct))
     end
 end
 

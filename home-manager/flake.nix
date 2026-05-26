@@ -68,6 +68,9 @@
             home.sessionVariables = {
               # Ensures HyprPanel and other tools use the Nix-managed Sass
               SASS_PATH = "${pkgs.dart-sass}/bin";
+              # defined for noctalia
+              PATH = "$HOME/.config/noctalia/bin:$PATH";
+              XDG_DATA_DIRS = "$XDG_DATA_DIRS:$HOME/.local/state/nix/profiles/profile/share:/usr/local/share:/usr/share";
             };
             home.packages = [ 
               self.packages.${system}.default

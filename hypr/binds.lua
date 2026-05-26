@@ -235,22 +235,6 @@ end
 -- (Keeping repeating = true so it smoothly glides as you hold the combination)
 hl.bind("SUPER + XF86MonBrightnessUp", function() step_saturation("up") end, { repeating = true })
 hl.bind("SUPER + XF86MonBrightnessDown", function() step_saturation("down") end, { repeating = true })
+
 -- Tap SUPER + SHIFT + N to instantly drop into amber monochrome mode at night!
 hl.bind("SUPER + SHIFT + N", function() saturation.toggle_night_mode() end)
--- experimental text sharpener
---hl.bind("SUPER + SHIFT + T", function() 
---    hl.config({ 
---        decoration = { 
---            screen_shader = os.getenv("HOME") .. "/.config/hypr/shaders/sharpen_text.frag" 
---        } 
---    }) 
---end)
---
----- Tap SUPER + SHIFT + C to clear all active shader processes completely
---hl.bind("SUPER + SHIFT + C", function() 
---    hl.config({ 
---        decoration = { 
---            screen_shader = "" 
---        } 
---    }) 
---end)
