@@ -27,11 +27,6 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + SHIFT + mouse:272", hl.dsp.window.resize(), { mouse = true })
 
 
--- Native function callbacks bound directly to your window environment keys!
-hl.bind(mainMod .. " + SHIFT + 1", function() saturation.set(100) end)
-hl.bind(mainMod .. " + SHIFT + 2", function() saturation.set(35) end)
-hl.bind(mainMod .. " + SHIFT + 3", function() saturation.set(0) end)
-
 -- Focus --
 hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
@@ -40,7 +35,6 @@ hl.bind(mainMod .. "+ L", function()
     local current_layout = hl.get_active_workspace().tiled_layout
     if current_layout == "scrolling" then
         hl.dispatch(hl.dsp.layout("focus right"))
-        --hl.dispatch(hl.dsp.focus({ direction = "right" }))
     else
       hl.dispatch(hl.dsp.focus({ direction = "right" }))
     end
@@ -50,7 +44,6 @@ hl.bind(mainMod .. "+ H", function()
   local current_layout = hl.get_active_workspace().tiled_layout
   if current_layout == "scrolling" then
     hl.dispatch(hl.dsp.layout("focus left"))
-    --hl.dispatch(hl.dsp.focus({ direction = "left" }))
   else
     hl.dispatch(hl.dsp.focus({ direction = "left" }))
   end
