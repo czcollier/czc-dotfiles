@@ -1,8 +1,8 @@
 hl.animation({
   leaf = "workspaces",
   enabled = true,
-  speed = 4,
-  style = "slidefade",
+  speed = 2,
+  style = "fade",
   bezier = "default"
 })
 

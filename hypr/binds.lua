@@ -5,6 +5,9 @@ local saturation = require("lib/saturation")
 -- ==========================================
 local mainMod = "SUPER"
 local ipc = "noctalia-shell ipc call"
+local windowResizeIncrement = 60
+local windowOpacityIncrement = 0.05
+local saturationIncrement = 10
 
 --- utilities ---
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
@@ -170,54 +173,88 @@ hl.bind(mainMod .. " + CTRL + X", hl.dsp.window.move({
 
 --- Window Resizing ---
 hl.bind("CTRL + SHIFT + L", hl.dsp.window.resize({
-  x = "+20",
+  x = "+".. windowResizeIncrement,
   y = "0",
-  relative = true,
-  repeating = true
-}))
+  relative = true
+}), { repeating = true })
 
 hl.bind("CTRL + SHIFT + H", hl.dsp.window.resize({
-  x = "-20",
+  x = "-" .. windowResizeIncrement,
   y = "0",
-  relative = true,
-  repeating = true
-}))
+  relative = true
+}), { repeating = true })
 
 hl.bind("CTRL + SHIFT + K", hl.dsp.window.resize({
   x = "0",
-  y = "-20",
-  relative = true,
-  repeating = true
-}))
+  y = "-" .. windowResizeIncrement,
+  relative = true
+}), { repeating = true })
 
 hl.bind("CTRL + SHIFT + J", hl.dsp.window.resize({
   x = "0",
-  y = "+20",
-  relative = true,
-  repeating = true
-}))
-
---- Window Opacity
-hl.bind(mainMod .. " + BRACKETLEFT", hl.dsp.window.set_prop({
-  prop = "opacity",
-  value = "0.7",
+  y = "+" .. windowResizeIncrement,
   relative = true
-})) 
+}), { repeating = true })
 
-hl.bind(mainMod .. " + BRACKETRIGHT", hl.dsp.window.set_prop({
-  prop = "opacity",
-  value = "1.0",
-  relative = true
-})) 
 
+
+--- window opacity ---
+local window_opacities = {}
+
+local function adjust_active_opacity(amount)
+    local win = hl.get_active_window()
+    if not win or not win.address then return end
+
+    -- Fetch recorded opacity or default to 1.0
+    local current = window_opacities[win.address] or 1.0
+    local new_opacity = math.max(0.1, math.min(1.0, current + amount))
+    
+    -- Save the state
+    window_opacities[win.address] = new_opacity
+
+    hl.dispatch(hl.dsp.window.set_prop({ 
+        window = "address:" .. win.address, 
+        prop = "opacity", 
+        value = tostring(new_opacity) 
+    }))
+    hl.dispatch(hl.dsp.window.set_prop({ 
+        window = "address:" .. win.address, 
+        prop = "opacity_inactive", 
+        value = tostring(new_opacity) 
+    }))
+end
+
+hl.bind("CTRL + SHIFT + BRACKETLEFT", function()
+  adjust_active_opacity(-windowOpacityIncrement)
+end)
+
+hl.bind("CTRL + SHIFT + BRACKETRIGHT", function()
+  adjust_active_opacity(windowOpacityIncrement)
+end)
+
+
+--- temporarily make window transparent ---
+hl.bind("CTRL + SHIFT + O", function()
+  hl.dispatch(hl.dsp.window.set_prop({prop = "opacity", value = 0.5}))
+  hl.dispatch(hl.dsp.window.set_prop({prop = "no_blur", value = 1 }))
+end)
+
+hl.bind("CTRL + SHIFT + O", function()
+  adjust_active_opacity(0)
+  hl.dispatch(hl.dsp.window.set_prop({prop = "no_blur", value = 0 }))
+end, { release = true })
+--- end temporary transparency ---
+--- end window opacity ---
+
+
+--- saturation adjustment ---
 local memory_saturation = 100
-
 local function step_saturation(direction)
     -- Calculate increments natively using our memory pointer
     if direction == "up" then
-        memory_saturation = memory_saturation + 10
+        memory_saturation = memory_saturation + saturationIncrement
     elseif direction == "down" then
-        memory_saturation = memory_saturation - 10
+        memory_saturation = memory_saturation - saturationIncrement
     end
 
     -- Keep values bounded between 0% and 100%
@@ -226,15 +263,42 @@ local function step_saturation(direction)
     elseif memory_saturation < 0 then 
         memory_saturation = 0 
     end
-
-    -- Hand the memory value straight to the library module
     saturation.set_saturation(memory_saturation)
 end
 
--- 2. Bind shortcuts cleanly using 0.55+ unified single-string syntax
--- (Keeping repeating = true so it smoothly glides as you hold the combination)
 hl.bind("SUPER + XF86MonBrightnessUp", function() step_saturation("up") end, { repeating = true })
 hl.bind("SUPER + XF86MonBrightnessDown", function() step_saturation("down") end, { repeating = true })
+--- end saturation ---
 
--- Tap SUPER + SHIFT + N to instantly drop into amber monochrome mode at night!
+
+--- Night time monochrome mode ---
 hl.bind("SUPER + SHIFT + N", function() saturation.toggle_night_mode() end)
+
+
+--- special magic terminal ---
+hl.bind("CTRL + SHIFT + P", function()
+  windows = hl.get_windows()
+  magic_win = nil
+  for _, win in ipairs(windows) do
+        if win.class == "magic_foot" then
+          magic_win = win
+          break
+        end
+    end
+    if magic_win then
+        if magic_win.workspace ~= hl.get_active_workspace() then
+            hl.dispatch(hl.dsp.window.move({ window = magic_win, workspace = "e+0", follow = true }))
+            hl.dispatch(hl.dsp.focus({ window = magic_win }))
+        hl.dispatch(hl.dsp.layout("splitratio 0.3"))
+        else
+            hl.dispatch(hl.dsp.window.move({ window = magic_win, workspace = "special:magic", follow = false }))
+        end
+    else
+        hl.dispatch(hl.dsp.workspace.toggle_special("magic"))
+        hl.dispatch(hl.dsp.window.move({ workspace = "e+0", follow = true }))
+        hl.dispatch(hl.dsp.focus({ window = magic_win }))
+        hl.dispatch(hl.dsp.layout("splitratio 0.7"))
+    end
+
+end)
+

@@ -95,10 +95,6 @@
 
 home.sessionVariables = {
     EDITOR = "vim";
-    # Interpolates the exact Nix store derivation outputs into persistent path variables
-    HYPRBARS_SO   = "${inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprbars}/lib/libhyprbars.so";
-    HYPRFOCUS_SO  = "${inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus}/lib/libhyprfocus.so";
-    HYPRSPACE_SO  = "${inputs.hyprspace.packages.${pkgs.stdenv.hostPlatform.system}.Hyprspace}/lib/libHyprspace.so";
   };
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

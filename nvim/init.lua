@@ -43,31 +43,45 @@ vim.g.maplocalleader = "\\"
 -- Setup lazy.nvim
 -- Setup lazy.nvim
 require("lazy").setup({
-   spec = {
-   {
-     'nvim-treesitter/nvim-treesitter',
-     build = ':TSUpdate',
-     config = function()
-       local configs = require("nvim-treesitter.config")
-       configs.setup({
-         ensure_installed = {
-           'bash', 'c', 'cpp', 'glsl', 'lua', 'java', 'python', 'vim', 'vimdoc', 'query', 'javascript', 'html' 
-         },
-         highlight = { enable = true },
-         indent = { enable = true },
-       })
-     end,
-   },
-   { "oxfist/night-owl.nvim", lazy = false, priority = 1000 }
+  spec = {
+    {
+      'nvim-treesitter/nvim-treesitter',
+      build = ':TSUpdate',
+      config = function()
+        local configs = require("nvim-treesitter.config")
+        configs.setup({
+          ensure_installed = {
+            'bash', 'c', 'cpp', 'glsl', 'lua', 'java', 'python', 'vim', 'vimdoc', 'query', 'javascript', 'html' 
+          },
+          highlight = { enable = true },
+          indent = { enable = true },
+        })
+      end,
+    },
+    {
+      "oxfist/night-owl.nvim", lazy = false, priority = 1000
+    },
+    {
+      "folke/tokyonight.nvim",
+      lazy = false,
+      priority = 1000,
+      opts = {},
+    },
+    {
+      "ibhagwan/fzf-lua",
+      -- optional for icon support
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+      -- or if using mini.icons/mini.nvim
+      -- dependencies = { "nvim-mini/mini.icons" },
+      ---@module "fzf-lua"
+      ---@type fzf-lua.Config|{}
+      ---@diagnostic disable: missing-fields
+      opts = {}
+      ---@diagnostic enable: missing-fields
+    }
   },
   install = { colorscheme = { "catppuccin" } },
   checker = { enabled = true },
-  {
-    "folke/tokyonight.nvim",
-    lazy = false,
-    priority = 1000,
-    opts = {},
-  }
 })
 
 vim.o.guifont = "Cousine Nerd Font:h10"

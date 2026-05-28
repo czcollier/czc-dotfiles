@@ -1,4 +1,5 @@
-active_border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
+active_border_color = { colors = {"rgba(33cc99ee)", "rgba(00ff99ee)"}, angle = 45 }
+--active_border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
 inactive_border_color = { colors = { "rgba(272727bb)" } }
 
 hl.config({
@@ -48,7 +49,7 @@ hl.config({
         blur = {
             enabled = true,
             size = 3,
-            passes = 2,
+            passes = 1,
             vibrancy = 0.1696,
             new_optimizations = true,
             brightness = 0.95
@@ -63,7 +64,8 @@ hl.config({
         enabled = true,
     },
     dwindle = {
-        preserve_split = true
+        preserve_split = true,
+        split_bias = 1,
     },
 
     master = {
@@ -81,12 +83,13 @@ hl.config({
     },
    group = {
         col = {
-            border_active = active_border_color,--border_active = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 },
+            border_active = active_border_color,
             border_inactive = inactive_border_color,
             border_locked_active = { colors = { "rgba(dd9999ee)", "rgba(dd6699ee)", angle = 45 } },
             border_locked_inactive = inactive_border_color,
 
         },
+        drag_into_group = 0,
         insert_after_current = true,
         groupbar = {
             enabled = true,
@@ -102,12 +105,12 @@ hl.config({
             gradient_round_only_edges = true,
             font_size = 12,
             text_color = "rgba(eeeeeeff)",
-            text_color_inactive = "rgba(171717ff)",
+            text_color_inactive = "rgba(777777ff)",
             col = {
-                active = { colors = { "rgba(171717cc)", "rgba(171717cc)", "rgba(171717aa)"  } },
-                inactive = { colors = { "rgba(595959cc)", "rgba(595959cc)", "rgba(595959aa)" } },
-                locked_active = { colors = { "rgba(353555ee)", "rgba(353555aa)", "rgba(35355588)"  } },
-                locked_inactive = { colors = { "rgba(59595955)", "rgba(59595933)", "rgba(59595911)" } },
+                active = { colors = { "rgba(aaaaee60)" } },
+                inactive = { colors = { "rgba(12121666)" } },
+                locked_active = { colors = { "rgba(ffcc6633)" } },
+                locked_inactive = { colors = { "rgba(40301025)" } },
             },
         }
     },
@@ -124,6 +127,9 @@ hl.config({
         cm_auto_hdr = 1,
         cm_enabled = true
     },
+    debug = {
+      -- disable_logs = false
+    }
     --  plugin = {
     --    hyprfocus = {
     --      mode = "shrink",
