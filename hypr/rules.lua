@@ -16,7 +16,7 @@ hl.workspace_rule({
 hl.workspace_rule({ workspace = "1", persistent = true })
 hl.workspace_rule({ workspace = "2", persistent = true })
 hl.workspace_rule({ workspace = "3", persistent = true })
-hl.workspace_rule({ workspace = "4", persistent = true })
+hl.workspace_rule({ workspace = "4", persistent = true, layout = "scrolling" })
 
 hl.workspace_rule({
   workspace = "special:magic",
