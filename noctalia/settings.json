@@ -87,6 +87,14 @@
         "widgets": {
             "center": [
                 {
+                    "defaultSettings": {
+                        "density": "comfortable",
+                        "maxHistorySize": 100,
+                        "showImagePreviews": true
+                    },
+                    "id": "plugin:clipboard"
+                },
+                {
                     "characterCount": 3,
                     "colorizeIcons": true,
                     "emptyColor": "secondary",
@@ -134,72 +142,17 @@
                     "unreadBadgeColor": "primary"
                 },
                 {
-                    "colorizeSystemIcon": "none",
-                    "colorizeSystemText": "none",
-                    "customIconPath": "",
-                    "enableColorization": false,
-                    "icon": "rocket",
-                    "iconColor": "none",
-                    "id": "Launcher",
-                    "useDistroLogo": false
-                },
-                {
-                    "defaultSettings": {
-                        "ai": {
-                            "apiKeys": {
-                            },
-                            "maxHistoryLength": 100,
-                            "model": "gemini-2.5-flash",
-                            "openaiBaseUrl": "https://api.openai.com/v1/chat/completions",
-                            "openaiLocal": false,
-                            "provider": "google",
-                            "systemPrompt": "You are a helpful assistant integrated into a Linux desktop shell. Be concise and helpful.",
-                            "temperature": 0.7
-                        },
-                        "maxHistoryLength": 100,
-                        "panelDetached": true,
-                        "panelHeightRatio": 0.85,
-                        "panelPosition": "right",
-                        "panelWidth": 520,
-                        "scale": 1,
-                        "translator": {
-                            "backend": "google",
-                            "deeplApiKey": "",
-                            "realTimeTranslation": true,
-                            "sourceLanguage": "auto",
-                            "targetLanguage": "en"
-                        }
-                    },
-                    "id": "plugin:assistant-panel"
-                },
-                {
-                    "compactMode": false,
-                    "hideMode": "hidden",
-                    "hideWhenIdle": false,
-                    "id": "MediaMini",
-                    "maxWidth": 145,
-                    "panelShowAlbumArt": true,
-                    "scrollingMode": "hover",
-                    "showAlbumArt": true,
-                    "showArtistFirst": true,
-                    "showProgressRing": true,
-                    "showVisualizer": false,
-                    "textColor": "none",
-                    "useFixedWidth": false,
-                    "visualizerType": "linear"
-                },
-                {
                     "compactMode": false,
                     "diskPath": "/",
                     "iconColor": "none",
                     "id": "SystemMonitor",
                     "showCpuCores": false,
-                    "showCpuFreq": true,
-                    "showCpuTemp": true,
+                    "showCpuFreq": false,
+                    "showCpuTemp": false,
                     "showCpuUsage": true,
                     "showDiskAvailable": false,
-                    "showDiskUsage": true,
-                    "showDiskUsageAsPercent": true,
+                    "showDiskUsage": false,
+                    "showDiskUsageAsPercent": false,
                     "showGpuTemp": false,
                     "showLoadAverage": true,
                     "showMemoryAsPercent": false,
@@ -212,41 +165,6 @@
                 }
             ],
             "right": [
-                {
-                    "blacklist": [
-                    ],
-                    "chevronColor": "none",
-                    "colorizeIcons": false,
-                    "drawerEnabled": true,
-                    "hidePassive": false,
-                    "id": "Tray",
-                    "pinned": [
-                    ]
-                },
-                {
-                    "defaultSettings": {
-                        "githubGistId": "",
-                        "githubToken": "",
-                        "notes": "[]",
-                        "syncEnabled": false
-                    },
-                    "id": "plugin:sticky-notes"
-                },
-                {
-                    "defaultSettings": {
-                        "density": "comfortable",
-                        "maxHistorySize": 100,
-                        "showImagePreviews": true
-                    },
-                    "id": "plugin:clipboard"
-                },
-                {
-                    "defaultSettings": {
-                        "precision": 8,
-                        "showBarValue": true
-                    },
-                    "id": "plugin:noctalia-calculator"
-                },
                 {
                     "displayMode": "onhover",
                     "iconColor": "none",
@@ -419,39 +337,6 @@
             {
                 "name": "DP-1",
                 "widgets": [
-                    {
-                        "clockColor": "none",
-                        "clockStyle": "analog",
-                        "customFont": "",
-                        "format": "HH:mm\\nd MMMM yyyy",
-                        "id": "Clock",
-                        "roundedCorners": true,
-                        "showBackground": true,
-                        "useCustomFont": false,
-                        "x": 3660,
-                        "y": 60
-                    },
-                    {
-                        "id": "Weather",
-                        "roundedCorners": true,
-                        "scale": 1.002301779886675,
-                        "showBackground": true,
-                        "x": 3300,
-                        "y": 60
-                    },
-                    {
-                        "hideMode": "visible",
-                        "id": "MediaPlayer",
-                        "roundedCorners": true,
-                        "scale": 0.7986034670354878,
-                        "showAlbumArt": true,
-                        "showBackground": true,
-                        "showButtons": true,
-                        "showVisualizer": true,
-                        "visualizerType": "linear",
-                        "x": 3300,
-                        "y": 180
-                    }
                 ]
             },
             {
