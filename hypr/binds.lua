@@ -3,8 +3,14 @@ local saturation = require("lib/saturation")
 
 -- ==========================================
 -- Bindings
+--
+-- In general, but not strictly:
+-- focus: SUPER + <key>
+-- workspace related: add CTRL + <key>
+-- window movement: add SHIFT + <key>
+-- utilities: SUPER + ALT + <key>
 -- ==========================================
-local noctalia_ipc = "noctalia-shell noctalia_ipc call"
+local noctalia_ipc = "noctalia-shell ipc call"
 local windowResizeIncrement = 60
 local windowOpacityIncrement = 0.05
 local saturationIncrement = 10
@@ -312,6 +318,6 @@ hl.bind("SUPER + W", function()
         workspace = tostring(wa.id), 
         layout = layouts[next_idx] 
     })
-    local cmd = string.format([[noctalia-shell noctalia_ipc call toast send '{"title": "Layout", "body": "%s", "duration": 500}']], layouts[next_idx])
+    local cmd = string.format(noctalia_ipc .. [[ toast send '{"title": "Layout", "body": "%s", "duration": 1000}']], layouts[next_idx])
     hl.exec_cmd(cmd)
 end, { description = "Cycle workspace layout" })
