@@ -1,8 +1,8 @@
 hl.workspace_rule({
   workspace = "special:hidden",
   layout = "scrolling",
-  gaps_in = "5",
-  gaps_out = "300"
+  gaps_in = "15",
+  gaps_out = "300",
 })
 
 hl.workspace_rule({
@@ -18,22 +18,26 @@ hl.workspace_rule({ workspace = "2", persistent = true })
 hl.workspace_rule({ workspace = "3", persistent = true })
 hl.workspace_rule({ workspace = "4", persistent = true, layout = "scrolling" })
 
-hl.workspace_rule({
-  workspace = "special:magic",
-  persistent = true,
-  on_created_empty = "foot -a magic_foot"
-
-})
-
 hl.window_rule {
-    name = "magic_foot",
+    name = "magic_home",
     match = { 
-      class = "magic_foot"
+      class = "magic_home"
     },
-    opacity = 0.7,
+    opacity = 0.85,
     rounding = 2,
     no_anim = true,
+    border_color = { colors = {"rgba(cc6699ee)", "rgba(cc9966ee)"}, angle = 45 },
+}
 
+hl.window_rule {
+    name = "magic_work",
+    match = { 
+      class = "magic_work"
+    },
+    opacity = 0.85,
+    rounding = 2,
+    no_anim = true,
+    border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
 }
 
 hl.window_rule {
@@ -70,9 +74,6 @@ hl.window_rule {
     },
     float = true,
     fullscreen = false,
-    --suppress_event = "fullscreen maximize",
-    --fullscreen_state = "0 0",
-    --maximize = false,
     size = "600 670"
 }
 

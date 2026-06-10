@@ -8,7 +8,7 @@ local saturation = require("lib/saturation")
 -- focus: SUPER + <key>
 -- workspace related: add CTRL + <key>
 -- window movement: add SHIFT + <key>
--- utilities: SUPER + ALT + <key>
+-- utilitiy: SUPER + ALT + <key>
 -- ==========================================
 local noctalia_ipc = "noctalia-shell ipc call"
 local windowResizeIncrement = 60
@@ -19,7 +19,7 @@ local saturationIncrement = 10
 hl.bind("SUPER + Q", hl.dsp.window.close())
 hl.bind("SUPER + SHIFT + Q", hl.dsp.window.kill())
 hl.bind("SUPER + ALT + L", hl.dsp.exec_cmd("/usr/bin/hyprlock"))
-hl.bind("SUPER + ALT + T", hl.dsp.exec_cmd("~/.config/hypr/scripts/hdrop.sh foot -a foot_drop"))
+--hl.bind("SUPER + ALT + T", hl.dsp.exec_cmd("~/.config/hypr/scripts/hdrop.sh foot -a foot_drop"))
 hl.bind("SUPER + ALT + S", hl.dsp.exec_cmd('grim -g "$(slurp)" - | swappy -f -'))
 hl.bind("SUPER + ALT + C", hl.dsp.exec_cmd(noctalia_ipc .. " plugin openPanel clipboard"))
 
@@ -28,15 +28,20 @@ hl.bind("SUPER + ALT + M",
     "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"),
     { long_press = true })
 
--- TODO: broken - script needs port to Lua
--- hl.bind("SUPER + SHIFT + CTRL + P", hl.dsp.exec_cmd("~/scripts/panelctl.sh toggle"))
-
 --- mouse ---
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind("SUPER + SHIFT + mouse:272", hl.dsp.window.resize(), { mouse = true })
+hl.bind("SUPER + CTRL + mouse:272", hl.dsp.focus({ workspace = "e-1" }))
+hl.bind("SUPER + CTRL + mouse:273", hl.dsp.focus({ workspace = "e+1" }))
 
-
+hl.bind("SUPER + SHIFT + mouse:272", hl.dsp.window.move({ direction = "left" }))
+hl.bind("SUPER + SHIFT + mouse:273", hl.dsp.window.move({ direction = "right" }))
+hl.bind("SUPER + SHIFT + mouse_down", hl.dsp.window.move({ direction = "down" }))
+hl.bind("SUPER + SHIFT + mouse_up", hl.dsp.window.move({ direction = "up" }))
 -- window focus --
+hl.bind("SUPER + CTRL + SHIFT + mouse:272", hl.dsp.window.move({ workspace = "-1" }))
+hl.bind("SUPER + CTRL + SHIFT + mouse:273", hl.dsp.window.move({ workspace = "+1" }))
+
 hl.bind("SUPER + K", hl.dsp.focus({ direction = "up" }))
 hl.bind("SUPER + J", hl.dsp.focus({ direction = "down" }))
 
@@ -68,16 +73,17 @@ end)
 hl.bind("SUPER + CTRL + H", hl.dsp.focus({ workspace = "e-1" }))
 hl.bind("SUPER + CTRL + L", hl.dsp.focus({ workspace = "e+1" }))
 
-hl.bind("SUPER + 7", hl.dsp.focus({ workspace = "1" }))
-hl.bind("SUPER + 8", hl.dsp.focus({ workspace = "2" }))
-hl.bind("SUPER + 9", hl.dsp.focus({ workspace = "3" }))
-hl.bind("SUPER + 0", hl.dsp.focus({ workspace = "4" }))
+hl.bind("SUPER + CTRL + 7", hl.dsp.focus({ workspace = "1" }))
+hl.bind("SUPER + CTRL + 8", hl.dsp.focus({ workspace = "2" }))
+hl.bind("SUPER + CTRL + 9", hl.dsp.focus({ workspace = "3" }))
+hl.bind("SUPER + CTRL + 0", hl.dsp.focus({ workspace = "4" }))
 
 --- move windows within workspace ---
 hl.bind("SUPER + SHIFT + H", hl.dsp.window.move({ direction = "left" }))
 hl.bind("SUPER + SHIFT + L", hl.dsp.window.move({ direction = "right" }))
 hl.bind("SUPER + SHIFT + J", hl.dsp.window.move({ direction = "down" }))
 hl.bind("SUPER + SHIFT + K", hl.dsp.window.move({ direction = "up" }))
+
 hl.bind("SUPER + T", hl.dsp.exec_cmd( "foot" ))
 hl.bind("SUPER + D", hl.dsp.exec_cmd( "gedit" ))
 hl.bind("SUPER + SPACE", hl.dsp.exec_cmd(noctalia_ipc .. " launcher toggle"))
@@ -103,6 +109,7 @@ hl.bind("SUPER + SHIFT + Space", function()
   hl.dispatch(hl.dsp.window.center())
 end)
 hl.bind("SUPER + SHIFT + P", hl.dsp.window.pseudo({ action = "toggle" }))
+hl.bind("SUPER + SHIFT + F", hl.dsp.window.fullscreen({ action= "toggle", mode = "fullscreen" }))
 
 --- dwindle layout bindings ---
 hl.bind("SUPER + S", hl.dsp.layout("togglesplit"))
@@ -127,9 +134,6 @@ hl.define_submap("group", "reset", function()
   hl.bind("L", hl.dsp.window.move({ into_group = "right" })) -- Bring it to the top
   hl.bind("escape", hl.dsp.submap("reset"))
 end)
-
-hl.bind("SUPER + CTRL + X", hl.dsp.window.move({
-  workspace = "special:hidden", follow = false }))
 
 --- Window Resizing ---
 hl.bind("CTRL + SHIFT + L", hl.dsp.window.resize({
@@ -184,11 +188,11 @@ end
 
 hl.bind("CTRL + SHIFT + BRACKETLEFT", function()
   adjust_active_opacity(-windowOpacityIncrement)
-end)
+end, { repeating = true })
 
 hl.bind("CTRL + SHIFT + BRACKETRIGHT", function()
   adjust_active_opacity(windowOpacityIncrement)
-end)
+end, { repeating = true })
 
 
 --- temporarily make window transparent ---
@@ -205,6 +209,7 @@ end, { release = true })
 --- saturation adjustment ---
 local memory_saturation = 100
 local function step_saturation(direction)
+
     -- Calculate increments natively using our memory pointer
     if direction == "up" then
         memory_saturation = memory_saturation + saturationIncrement
@@ -235,6 +240,9 @@ hl.bind("SUPER + XF86MonBrightnessDown", function() step_saturation("down") end,
 hl.bind("SUPER + SHIFT + N", function() saturation.toggle_night_mode() end)
 
 -- Special Hidden Workspace ---
+hl.bind("SUPER + CTRL + X", hl.dsp.window.move({
+  workspace = "special:hidden", follow = false }))
+
 hl.bind("SUPER + TAB", function()
   sws = hl.get_workspace("special:hidden")
   if sws and not sws.active then
@@ -262,8 +270,13 @@ hl.define_submap("hdn2", function()
     hl.dispatch(hl.dsp.submap("reset"))
   end)
 
-  hl.bind("ALT + TAB", hl.dsp.focus({ direction = "right" }))
-  hl.bind("ALT + SHIFT + TAB", hl.dsp.focus({ direction = "left" }))
+  hl.bind("SUPER + TAB", hl.dsp.layout("focus right"))
+  hl.bind("SUPER + SHIFT + TAB", hl.dsp.layout("focus left"))
+  
+  --hl.bind("SUPER + TAB", function()
+  --  local cmd = string.format(noctalia_ipc .. [[ toast send '{"title": "Foo", "body": "bar", "duration": 1000}']])
+  --  hl.exec_cmd(cmd)
+  --end, { release = true })
 
   hl.bind("SUPER + RETURN", function()
     select_from_hidden("hidden")
@@ -274,12 +287,18 @@ hl.define_submap("hdn2", function()
   end)
 end)
 
+hl.define_submap("hdn_select", function()
+  hl.bind("SUPER + SUPER_L", function()
+    select_from_hidden("hidden")
+  end, { release = true })
+end)
+
 --- special magic terminal ---
-hl.bind("CTRL + SHIFT + P", function()
+function toggle_special_magic(magic_name)
   windows = hl.get_windows()
   magic_win = nil
   for _, win in ipairs(windows) do
-        if win.class == "magic_foot" then
+        if win.class == "magic_" .. magic_name then
           magic_win = win
           break
         end
@@ -288,18 +307,25 @@ hl.bind("CTRL + SHIFT + P", function()
         if magic_win.workspace ~= hl.get_active_workspace() then
             hl.dispatch(hl.dsp.window.move({ window = magic_win, workspace = "e+0", follow = true }))
             hl.dispatch(hl.dsp.focus({ window = magic_win }))
-        hl.dispatch(hl.dsp.layout("splitratio 0.3"))
+            hl.dispatch(hl.dsp.layout("splitratio 0.3"))
         else
-            hl.dispatch(hl.dsp.window.move({ window = magic_win, workspace = "special:magic", follow = false }))
+            hl.dispatch(hl.dsp.window.move({ window = magic_win, workspace = "special:magic_" .. magic_name, follow = false }))
         end
     else
-        hl.dispatch(hl.dsp.workspace.toggle_special("magic"))
-        hl.dispatch(hl.dsp.window.move({ workspace = "e+0", follow = true }))
-        hl.dispatch(hl.dsp.focus({ window = magic_win }))
-        hl.dispatch(hl.dsp.layout("splitratio 0.7"))
+        --hl.dispatch(hl.dsp.workspace.toggle_special("magic" .. magic_name))
+        --hl.dispatch(hl.dsp.workspace.toggle_special("magic"))
+        --hl.dispatch(hl.dsp.window.move({ workspace = "e+0", follow = true }))
+        --hl.dispatch(hl.dsp.focus({ window = magic_win }))
+        local tmux_cmd = "tmux new-session -A -s " .. magic_name
+        hl.exec_cmd("foot -a magic_" .. magic_name .. " " .. tmux_cmd)
+        --hl.dispatch(hl.dsp.layout("splitratio 0.7"))
     end
+end
 
-end)
+
+hl.bind("SUPER + ALT + Y", function() toggle_special_magic("home") end)
+hl.bind("SUPER + ALT + T", function() toggle_special_magic("work") end)
+
 
 --- layout switcher ---
 local layouts = { "dwindle", "master", "scrolling", "monocle" }

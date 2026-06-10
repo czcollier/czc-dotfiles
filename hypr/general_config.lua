@@ -41,10 +41,10 @@ hl.config({
         dim_around = 1.0,
         shadow = {
             enabled = true,
-            range = 8,
-            offset = { 5, 5 },
-            render_power = 2,
-            color = "rgba(1a1a1a77)"
+            range = 16,
+            offset = { 8, 8 },
+            render_power = 1,
+            color = "rgba(1a1a1a99)"
         },
         blur = {
             enabled = true,
@@ -74,11 +74,10 @@ hl.config({
         always_keep_position = true
     },
     scrolling = {
-        column_width = 1,
+        column_width = 0.7,
         wrap_focus = true,
-        fullscreen_on_one_column = true,
-        explicit_column_widths = "1, 0.5",
-        focus_fit_method = 1,
+        --follow_focus = true,
+        focus_fit_method = 0,
         follow_min_visible = 1.0
     },
    group = {
