@@ -31,4 +31,11 @@ hl.bind("switch:off:Lid Switch", function()
   os.execute("hyprctl reload")
 end, { locked = true })
 
+local lid_timer = hl.timer(function()
+  local lid_state = M.get_lid_state()
+  handle_switch(lid_state)
+end, { timeout = 2000, type = "repeat" })
+
+lid_timer:set_enabled(true)
+
 return M

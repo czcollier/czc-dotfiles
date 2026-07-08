@@ -2,6 +2,20 @@ active_border_color = { colors = {"rgba(33cc99ee)", "rgba(00ff99ee)"}, angle = 4
 --active_border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
 inactive_border_color = { colors = { "rgba(272727bb)" } }
 
+hl.monitor({ output = "VR-1", mode = "5760x2160@60", position = "auto", scale = 1.5 })
+
+hl.device({
+  name= "SpatialProductivityKeyboard", 
+  enabled = false
+})
+
+-- Suppress the VR keyboard bridge on the physical desktop.
+-- Events from this device go to headless sway (wayland-2) → foot in VR only.
+hl.device({
+  name = "virtual-vr-keyboard",
+  enabled = false
+})
+
 hl.config({
     input = {
         kb_layout = "us",

@@ -3,10 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    hyprland.url = "github:hyprwm/Hyprland/v0.55.0";
-    hyprpanel.url = "github:Jas-SinghFSU/HyprPanel/master";
+    hyprland.url = "github:hyprwm/Hyprland/v0.55.4";
     nix-gl-host.url = "github:numtide/nix-gl-host";
-    ashell.url = "github:MalpenZibo/ashell";
 
     quickshell = {
       url = "github:quickshell-mirror/quickshell";
@@ -29,20 +27,13 @@
       inputs.hyprland.follows = "hyprland";
     };
 
-    hyprspace = {
-      # url = "github:wochb/Hyprspace/v0.55.0";
-      url = "git+https://github.com/colonelpanic8/Hyprspace.git?ref=codex/defer-hyprspace-initial-reload";
-      #url = "github:colonelpanic8/Hyprspace/defer-hyprspace-initial-reload";
-      inputs.hyprland.follows = "hyprland";
-    };
-
-    hypr-dynamic-cursors = {
-        url = "github:VirtCode/hypr-dynamic-cursors";
-        inputs.hyprland.follows = "hyprland";
+    simula = {
+      url = "github:SimulaVR/Simula";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 };
 
-  outputs = { self, nixpkgs, home-manager, hyprpanel, nix-gl-host, ashell, quickshell, noctalia, hyprland-plugins, hyprspace, hypr-dynamic-cursors, ... }@inputs: 
+  outputs = { self, nixpkgs, home-manager, nix-gl-host, quickshell, noctalia, hyprland-plugins, simula, ... }@inputs: 
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -56,6 +47,7 @@
           pkgs.qt6.qtshadertools               # Often needed for custom Material shaders
           pkgs.kdePackages.kirigami            # This fixes the current error
           pkgs.qt6.qtwayland
+          pkgs.wtype
       ];
       homeConfigurations."czcollier" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
@@ -77,13 +69,15 @@
               noctalia.packages.${system}.default
               inputs.hyprland.packages.${system}.hyprland
               nix-gl-host.defaultPackage.${system}
-              hyprpanel.packages.${system}.default
               pkgs.dart-sass
               pkgs.libnotify
               pkgs.swww
               pkgs.bibata-cursors
               pkgs.rose-pine-hyprcursor
-              ashell.packages.${system}.default
+              inputs.simula.packages.${pkgs.system}.simula
+              pkgs.wayvr
+              pkgs.cage
+              pkgs.weston
             ];
 
             programs.home-manager.enable = true;

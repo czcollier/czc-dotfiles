@@ -11,14 +11,14 @@ local google_pwas = require("google_pwas")
 -- window movement: add SHIFT + <key>
 -- utilitiy: SUPER + ALT + <key>
 -- ==========================================
-local noctalia_ipc = "noctalia-shell ipc call"
+local noctalia_ipc = "noctalia msg "
 local windowResizeIncrement = 60
 local windowOpacityIncrement = 0.05
 local saturationIncrement = 10
 
 --- utilities - typically SUPER + ALT .. ---
 hl.bind("SUPER + SLASH", hl.dsp.exec_cmd(noctalia_ipc .. " plugin:keybind-cheatsheet toggle"), { description = "toggle the keybind cheatsheet" })
-hl.bind("SUPER + SPACE", hl.dsp.exec_cmd(noctalia_ipc .. " launcher toggle"), { description = "toggle app launcher" })
+hl.bind("SUPER + SPACE", hl.dsp.exec_cmd(noctalia_ipc .. "panel-toggle launcher"), { description = "toggle noctalia app launcher" })
 hl.bind("SUPER + Q", hl.dsp.window.close(), { description = "close the current window" })
 
 hl.bind("SUPER + ALT + M",
@@ -28,8 +28,8 @@ hl.bind("SUPER + ALT + M",
 
 hl.bind("SUPER + ALT + Q", hl.dsp.window.kill(), { description = "kill the current window" })
 hl.bind("SUPER + ALT + L", hl.dsp.exec_cmd("/usr/bin/hyprlock"), { description = "lock the screen" })
-hl.bind("SUPER + ALT + S", hl.dsp.exec_cmd('grim -g "$(slurp)" - | swappy -f -'), { description = "take an interactive screenshot" })
-hl.bind("SUPER + ALT + C", hl.dsp.exec_cmd(noctalia_ipc .. " plugin openPanel clipboard"), { description = "open clipboard manager" })
+hl.bind("SUPER + ALT + S", hl.dsp.exec_cmd(noctalia_ipc .. 'screenshot-region'), { description = "take an interactive screenshot" })
+hl.bind("SUPER + ALT + C", hl.dsp.exec_cmd(noctalia_ipc .. " panel-toggle clipboard"), { description = "open clipboard manager" })
 hl.bind( "SUPER + ALT + P", function() google_pwas.launch_or_focus_pwas() end)
 
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),   { mouse = true, description = "drag window" })
@@ -79,6 +79,7 @@ hl.bind("SUPER + SHIFT + Space", function()
 end, { description = "float and center active window" })
 hl.bind("SUPER + SHIFT + P", hl.dsp.window.pseudo({ action = "toggle" }), { description = "toggle pseudo layout" })
 hl.bind("SUPER + SHIFT + F", hl.dsp.window.fullscreen({ action= "toggle", mode = "fullscreen" }), { description = "toggle fullscreen" })
+hl.bind("SUPER + SHIFT + ALT + F", hl.dsp.window.fullscreen_state({ client = 3, internal = 3, action = "set" }))
 
 --- alt-tab approximation ---
 hl.bind("ALT + Tab", function()
@@ -96,6 +97,7 @@ hl.bind("SUPER + CTRL + 7", hl.dsp.focus({ workspace = "1" }), { description = "
 hl.bind("SUPER + CTRL + 8", hl.dsp.focus({ workspace = "2" }), { description = "focus workspace 2" })
 hl.bind("SUPER + CTRL + 9", hl.dsp.focus({ workspace = "3" }), { description = "focus workspace 3" })
 hl.bind("SUPER + CTRL + 0", hl.dsp.focus({ workspace = "4" }), { description = "focus workspace 4" })
+hl.bind("SUPER + CTRL + MINUS", hl.dsp.focus({ workspace = "5" }), { description = "focus workspace 5" })
 
 
 
@@ -105,11 +107,17 @@ hl.bind("SUPER + CTRL + SHIFT + L", hl.dsp.window.move({ workspace = "+1" }), { 
 hl.bind("SUPER + CTRL + SHIFT + mouse:272", hl.dsp.window.move({ workspace = "-1" }), { description = "move window to previous workspace via mouse" })
 hl.bind("SUPER + CTRL + SHIFT + mouse:273", hl.dsp.window.move({ workspace = "+1" }), { description = "move window to next workspace via mouse" })
 
-hl.bind("SUPER + CTRL + SHIFT + 7", hl.dsp.window.move({ workspace = "1" }), { description = "move window to workspace 1" })
-hl.bind("SUPER + CTRL + SHIFT + 8", hl.dsp.window.move({ workspace = "2" }), { description = "move window to workspace 2" })
-hl.bind("SUPER + CTRL + SHIFT + 9", hl.dsp.window.move({ workspace = "3" }), { description = "move window to workspace 3" })
-hl.bind("SUPER + CTRL + SHIFT + 0", hl.dsp.window.move({ workspace = "4" }), { description = "move window to workspace 4" })
+-- jump window directly to workspace - do not follow --
+hl.bind("SUPER + CTRL + SHIFT + 7", hl.dsp.window.move({ workspace = "1", follow = false }), { description = "move window to workspace 1" })
+hl.bind("SUPER + CTRL + SHIFT + 8", hl.dsp.window.move({ workspace = "2", follow = false }), { description = "move window to workspace 2" })
+hl.bind("SUPER + CTRL + SHIFT + 9", hl.dsp.window.move({ workspace = "3", follow = false }), { description = "move window to workspace 3" })
+hl.bind("SUPER + CTRL + SHIFT + 0", hl.dsp.window.move({ workspace = "4", follow = false }), { description = "move window to workspace 4" })
+hl.bind("SUPER + CTRL + SHIFT + v", hl.dsp.window.move({ workspace = "10", follow = false }), { description = "move window to workspace 10" })
 
+
+hl.bind("CTRL + ALT + L", hl.dsp.workspace.move({ monitor = "+1"}), { description = "move workspace to the next monitor" })
+hl.bind("CTRL + ALT + H", hl.dsp.workspace.move({ monitor = "-1"}), { description = "move workspace to the previous monitorleft" })
+--hl.bind("CTRL + SHIFT + ALT + M", hl.dsp.workspace.swap_monitors({monitor1 = "eDP-1", monitor2 = "DP-1"}), { description = "swap" })
 
 --- dwindle layout bindings ---
 hl.bind("SUPER + S", hl.dsp.layout("togglesplit"), { description = "toggle layout split" })
@@ -273,11 +281,6 @@ hl.define_submap("hdn2", function()
   hl.bind("SUPER + TAB", hl.dsp.layout("focus right"), { description = "focus next hidden window" })
   hl.bind("SUPER + SHIFT + TAB", hl.dsp.layout("focus left"), { description = "focus previous hidden window" })
   
-  --hl.bind("SUPER + TAB", function()
-  --  local cmd = string.format(noctalia_ipc .. [[ toast send '{"title": "Foo", "body": "bar", "duration": 1000}']])
-  --  hl.exec_cmd(cmd)
-  --end, { release = true })
-
   hl.bind("SUPER + RETURN", function()
     select_from_hidden("hidden")
   end, { description = "restore selected hidden window" })
@@ -295,8 +298,8 @@ end)
 
 --- special magic terminal ---
 function toggle_special_magic(magic_name)
-  windows = hl.get_windows()
-  magic_win = nil
+  local windows = hl.get_windows()
+  local magic_win = nil
   for _, win in ipairs(windows) do
         if win.class == "magic_" .. magic_name then
           magic_win = win
@@ -307,27 +310,49 @@ function toggle_special_magic(magic_name)
         if magic_win.workspace ~= hl.get_active_workspace() then
             hl.dispatch(hl.dsp.window.move({ window = magic_win, workspace = "e+0", follow = true }))
             hl.dispatch(hl.dsp.focus({ window = magic_win }))
+            -- 2. Shove it to the bottom-right of the dwindle layout
+            hl.dispatch(hl.dsp.window.move({ window = magic_win, direction = "d" }))
+            hl.dispatch(hl.dsp.window.move({ window = magic_win, direction = "r" }))
+           
             hl.dispatch(hl.dsp.layout("splitratio 0.3"))
         else
             hl.dispatch(hl.dsp.window.move({ window = magic_win, workspace = "special:magic_" .. magic_name, follow = false }))
         end
     else
-        --hl.dispatch(hl.dsp.workspace.toggle_special("magic" .. magic_name))
-        --hl.dispatch(hl.dsp.workspace.toggle_special("magic"))
-        --hl.dispatch(hl.dsp.window.move({ workspace = "e+0", follow = true }))
-        --hl.dispatch(hl.dsp.focus({ window = magic_win }))
         local tmux_cmd = "tmux new-session -A -s " .. magic_name
         hl.exec_cmd("foot -a magic_" .. magic_name .. " " .. tmux_cmd)
-        --hl.dispatch(hl.dsp.layout("splitratio 0.7"))
     end
 end
 
+hl.define_submap("terms", function()
+  hl.bind("H", function()
+    toggle_special_magic("home")
+    hl.dispatch(hl.dsp.submap("reset"))
+  end, { release = true, description = "toggle special magic terminal 'home'" })
+  hl.bind("W", function()
+    toggle_special_magic("work")
+    hl.dispatch(hl.dsp.submap("reset"))
+  end, { release = true, description = "toggle special magic terminal 'work'" })
+end)
 
-hl.bind("SUPER + ALT + Y", function() toggle_special_magic("home") end, { description = "toggle special magic terminal 'home'" })
-hl.bind("SUPER + ALT + T", function() toggle_special_magic("work") end, { description = "toggle special magic terminal 'work'" })
+hl.bind("SUPER + T", function()
+  hl.dispatch(hl.dsp.submap("terms"))
+end)
 
-
+    
 --- layout switcher ---
+local last_layout_msg_id = ""
+
+function exec_with_stdout(cmd)
+  local handle = io.popen(cmd)
+  if handle ~= nil then
+      local ret = handle:read("*a"):gsub("\n$", "")
+      handle:close()
+      return ret
+  end
+  return ""
+end
+
 local layouts = { "dwindle", "master", "scrolling", "monocle" }
 hl.bind("SUPER + W", function()
     local wa = hl.get_active_workspace()
@@ -344,6 +369,78 @@ hl.bind("SUPER + W", function()
         workspace = tostring(wa.id), 
         layout = layouts[next_idx] 
     })
-    local cmd = string.format(noctalia_ipc .. [[ toast send '{"title": "Layout", "body": "%s", "duration": 1000}']], layouts[next_idx])
-    hl.exec_cmd(cmd)
+    local cmd = string.format("notify-send " .. [[-p "Layout" "%s"]], last_layout_msg_id, layouts[next_idx])
+    last_layout_msg_id = exec_with_stdout(cmd)
 end, { description = "Cycle workspace layout" })
+
+
+-- 1. Trigger the passthrough submap entry
+hl.bind("SUPER + ALT + ESCAPE", function()
+    hl.dispatch(hl.dsp.submap("passthrough"))
+end, { description = "Enter total keyboard passthrough mode" })
+
+-- 2. Define the empty isolation box
+hl.define_submap("passthrough", function()
+    -- The ONLY keys captured by Hyprland in this state is escaping back to normal
+    hl.bind("ESCAPE", function()
+        hl.dispatch(hl.dsp.submap("reset"))
+    end, { description = "Exit passthrough mode and restore window manager shortcuts" })
+end)
+
+-- Moves all windows from the current workspace to a target workspace
+local function move_current_windows_to(target)
+    local active_ws = hl.get_active_workspace()
+    if not active_ws then return end
+    
+    local current_ws_id = tostring(active_ws.id)
+    
+    local windows = hl.get_windows()
+    if not windows then return end
+
+    for _, win in ipairs(windows) do
+        if win.workspace and tostring(win.workspace.id) == current_ws_id then
+            hl.dispatch(hl.dsp.window.move({
+                follow = false,
+                window = win,
+                workspace = target
+            }))
+        end
+    end
+end
+
+hl.bind("CTRL + SHIFT + ALT + 1", function()
+    move_current_windows_to(1)
+end, { description = "Move all windows from current workspace to workspace 1" })
+hl.bind("CTRL + SHIFT + ALT + 2", function()
+    move_current_windows_to(2)
+end, { description = "Move all windows from current workspace to workspace 2" })
+hl.bind("CTRL + SHIFT + ALT + 3", function()
+    move_current_windows_to(3)
+end, { description = "Move all windows from current workspace to workspace 3" })
+hl.bind("CTRL + SHIFT + ALT + 4", function()
+    move_current_windows_to(4)
+end, { description = "Move all windows from current workspace to workspace 4" })
+
+-- Safely swap the current workspace to the alternative monitor
+hl.bind("CTRL + SHIFT + ALT + M", function()
+    local active_ws = hl.get_active_workspace()
+    if not active_ws then return end
+    local current_mon = active_ws.monitor.name
+    -- Determine the target monitor based on where you are currently looking
+    -- If you are on the laptop screen (eDP-1), target the external monitor (DP-1), and vice-versa.
+    local target_monitor = (current_mon == "eDP-1") and "DP-1" or "eDP-1"
+
+      local notify_cmd = string.format(
+        [[notify-send "current: %s"]], active_ws.monitor.name)
+      hl.exec_cmd(notify_cmd)
+    -- Move the active workspace to the other monitor output
+    hl.dispatch(hl.dsp.workspace.move({ 
+        monitor = target_monitor
+    }))
+end, { description = "Swap active workspace to the other monitor" })
+
+
+
+hl.bind("CTRL + SHIFT + ALT + RETURN", hl.dsp.exec_cmd("WAYLAND_DISPLAY=wayland-20 wtype -M logo Return"))
+hl.bind("CTRL + SHIFT + ALT + Q", hl.dsp.exec_cmd("WAYLAND_DISPLAY=wayland-20 wtype -M shift q"))
+  

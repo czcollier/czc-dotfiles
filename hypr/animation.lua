@@ -1,15 +1,15 @@
 hl.animation({
   leaf = "workspaces",
   enabled = true,
-  speed = 2,
-  style = "fade",
+  speed = 7,
+  style = "slidefade",
   bezier = "default"
 })
 
 hl.animation({
   leaf = "windowsMove",
   enabled = true,
-  speed = 3,
+  speed = 4,
   style = "gnomed",
   bezier = "default"
 })
