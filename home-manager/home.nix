@@ -3,10 +3,11 @@
 let
   # 1. Define the customized Monado build cleanly as a local variable
   unlockedMonado = pkgs.monado.overrideAttrs (oldAttrs: {
-    hardwareDrivers = [ "external" "simulated" "remote" "wmr" ];
+    hardwareDrivers = [ "external" "simulated" "remote" "wmr" "survive" ];
+    surviveSupport =  true;
     # modify the meson flags to explicitly force the external driver build
     mesonFlags = (oldAttrs.mesonFlags or []) ++ [
-      "-Ddrivers=external,simulated,remote,wmr" 
+      "-Ddrivers=external,simulated,remote,wmr,survive" 
     ];
     # 1. Force the missing C build dependencies into the build environment sandbox
     buildInputs = (oldAttrs.buildInputs or []) ++ [ 
@@ -66,6 +67,7 @@ in {
     vulkan-tools
     cage
     unlockedMonado
+    libsurvive
     # FORCE the actual plugin binaries to be installed into ~/.nix-profile/lib/
     #inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprbars
     #inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
@@ -224,7 +226,9 @@ in {
   #
 
 home.sessionVariables = {
+    LD_LIBRARY_PATH = "${pkgs.libsurvive}/lib:$LD_LIBRARY_PATH";
     EDITOR = "vim";
+    SURVIVE_GLOBALSCENESOLVER = "0"; # Freezes background recalibration for desktop stability
   };
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
