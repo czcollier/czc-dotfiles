@@ -26,8 +26,6 @@ let
     ];
   });
 in {
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
   home.username = "czcollier";
   home.homeDirectory = "/home/czcollier";
 
@@ -42,22 +40,24 @@ in {
 
   wayland.windowManager.hyprland = {
     enable = true;
-    xwayland.enable = true;
-    #package = pkgs.hyprland;
+    #xwayland.enable = true;
+    configType = "lua";
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    plugins = [
+    extraConfig = ''
+    require("czc-hyprland")
+  '';
+    #plugins = [
       #inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprbars
       #inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
       #inputs.hyprspace.packages.${pkgs.stdenv.hostPlatform.system}.Hyprspace
-    ];
+    #];
     # Optional: You can put your hyprland.conf logic directly here later
     # settings = { ... }; 
   };
-  
+ 
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-    # These now come from your primary nixpkgs channel
     hyprcursor
     hyprlock
     hyprpaper
@@ -65,13 +65,8 @@ in {
     openxr-loader
     gamescope
     vulkan-tools
-    cage
     unlockedMonado
     libsurvive
-    # FORCE the actual plugin binaries to be installed into ~/.nix-profile/lib/
-    #inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprbars
-    #inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
-    #inputs.hyprspace.packages.${pkgs.stdenv.hostPlatform.system}.Hyprspace
   ];
   
   # 2. Wire Up the OpenXR Configuration File Registry
@@ -92,6 +87,7 @@ in {
       "active": "remote",
       "drivers": {
         "remote": true,
+        "survive": true,
         "simulate": false,
         "null": false
       },
@@ -146,7 +142,7 @@ in {
       ];
     };
     Install = {
-      WantedBy = [ "graphical-session.target" ]; # Bind directly to your active window manager lifecycle
+      WantedBy = [ "graphical-session.target" ]; # Bind directly to active window manager lifecycle
     };
   };
   
@@ -163,17 +159,12 @@ in {
         "WLR_RENDERER=vulkan"
         "WLR_HEADLESS_OUTPUTS=1"
       ];
-      
-      # Launches cage hosting kitty across the 5760x1080 virtual layout
-      # We use a wrap script or direct invocation. Note: cage doesn't natively parse custom geometry flags, 
-      # so wlroots handles the output configuration via environment variable if needed, or defaults gracefully.
-      ExecStart = "${pkgs.cage}/bin/cage -s -- ${pkgs.kitty}/bin/kitty";
-      Restart = "on-failure";
     };
     Install = {
       WantedBy = [ "graphical-session.target" ];
     };
   };
+
   #home.packages = [
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
@@ -196,34 +187,8 @@ in {
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
   home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
-
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
   };
 
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. These will be explicitly sourced when using a
-  # shell provided by Home Manager. If you don't want to manage your shell
-  # through Home Manager then you have to manually source 'hm-session-vars.sh'
-  # located at either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/czcollier/etc/profile.d/hm-session-vars.sh
-  #
 
 home.sessionVariables = {
     LD_LIBRARY_PATH = "${pkgs.libsurvive}/lib:$LD_LIBRARY_PATH";

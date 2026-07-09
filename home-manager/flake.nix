@@ -71,7 +71,7 @@
               nix-gl-host.defaultPackage.${system}
               pkgs.dart-sass
               pkgs.libnotify
-              pkgs.swww
+              pkgs.awww
               pkgs.bibata-cursors
               pkgs.rose-pine-hyprcursor
               inputs.simula.packages.${pkgs.system}.simula

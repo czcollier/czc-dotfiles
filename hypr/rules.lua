@@ -9,7 +9,8 @@ hl.workspace_rule({ workspace = "1", persistent = true })
 hl.workspace_rule({ workspace = "2", persistent = true })
 hl.workspace_rule({ workspace = "3", persistent = true })
 hl.workspace_rule({ workspace = "4", persistent = true })
-hl.workspace_rule({ workspace = "10", monitor = "VR-1", persistent = true })
+hl.workspace_rule({ workspace = "10", monitor = "HDMI-A-1", persistent = true })
+
 
 hl.window_rule {
     name = "magic_home",
@@ -100,7 +101,7 @@ local suppressMaximizeRule = hl.window_rule({
 hl.window_rule({
     name = "sandbox-monado-title",
     match = { title = "^(Monado.*)$" },
-    monitor = "VR-1",
+    monitor = "HDMI-A-1",
     fullscreen = true,
     workspace = "10 silent",
 })
