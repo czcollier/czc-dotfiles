@@ -341,6 +341,22 @@
         "type": "github"
       }
     },
+    "hyprexpo-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782920873,
+        "narHash": "sha256-sERoTu9NcGD0RA3jAdHc4GOPkRbgqMrgDT8f7+Jv9fc=",
+        "owner": "sandwichfarm",
+        "repo": "hyprexpo",
+        "rev": "e76761b268a0ee1747d41e21355fa315797a9bfd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sandwichfarm",
+        "repo": "hyprexpo",
+        "type": "github"
+      }
+    },
     "hyprgraphics": {
       "inputs": {
         "hyprutils": [
@@ -905,6 +921,7 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
+        "hyprexpo-src": "hyprexpo-src",
         "hyprland": "hyprland",
         "hyprland-plugins": "hyprland-plugins",
         "nix-gl-host": "nix-gl-host",

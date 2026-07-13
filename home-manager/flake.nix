@@ -22,6 +22,10 @@
       url = "github:hyprwm/hyprland-plugins/v0.55.0";
       inputs.hyprland.follows = "hyprland";
     };
+    hyprexpo-src = {
+      url = "github:sandwichfarm/hyprexpo";
+      flake = false;
+    };
     simula = {
       url = "github:SimulaVR/Simula";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -32,6 +36,13 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      hyprland-pkg = inputs.hyprland.packages.${system}.hyprland;
+      hyprexpo-plugin = pkgs.callPackage "${inputs.hyprexpo-src}/default.nix" {
+        hyprland = hyprland-pkg;
+        hyprlandPlugins = {
+          mkHyprlandPlugin = hyprland-pkg.plugins.mkHyprlandPlugin;
+        };
+      };
     in {
       # Export the custom quickshell package so home.nix can consume it
       packages.${system}.quickshell-custom = inputs.quickshell.packages.${system}.quickshell.withModules [
@@ -46,9 +57,15 @@
         pkgs.wtype
       ];
 
+      hyprexpo = hyprexpo-plugin;
+
       homeConfigurations."czcollier" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        extraSpecialArgs = { inherit inputs self; };
+        extraSpecialArgs = {
+          inherit inputs self;
+          hyprexpo = hyprexpo-plugin;
+          quickshell-custom = self.packages.${system}.quickshell-custom;
+        };
         modules = [ ./home.nix ];
       };
     };

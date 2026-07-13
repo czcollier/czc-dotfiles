@@ -1,11 +1,11 @@
-{ config, pkgs, inputs, self, ... }:
+{ config, pkgs, inputs, quickshell-custom, self, ... }:
 
 let
   system = pkgs.stdenv.hostPlatform.system;
 
   unlockedMonado = pkgs.monado.overrideAttrs (oldAttrs: {
     hardwareDrivers = [ "external" "simulated" "remote" "wmr" "survive" ];
-    surviveSupport = true; 
+    rootSupport = true; # or surviveSupport depending on your nixpkgs target variant
     mesonFlags = (oldAttrs.mesonFlags or []) ++ [
       "-Ddrivers=external,simulated,remote,wmr,survive" 
     ];
@@ -32,7 +32,7 @@ in {
 
   # --- Packages ---
   home.packages = with pkgs; [
-    self.packages.${system}.quickshell-custom
+    quickshell-custom
     inputs.noctalia.packages.${system}.default
     inputs.hyprland.packages.${system}.hyprland
     inputs.nix-gl-host.defaultPackage.${system}
@@ -72,16 +72,24 @@ in {
   programs.home-manager.enable = true;
   gtk.enable = true;
 
+  programs.foot = {
+    enable = true;
+    server.enable = false; 
+  };
+
+  services.swaync = {
+    enable = false;
+  };
+
   wayland.windowManager.hyprland = {
+    package = inputs.hyprland.packages.${system}.hyprland;
     enable = true;
     configType = "lua";
-    package = inputs.hyprland.packages.${system}.hyprland;
     extraConfig = ''
-      -- Explicitly add the hyprland config directory to the Lua package path
       package.path = package.path .. ";${config.xdg.configHome}/hypr/?.lua;${config.xdg.configHome}/hypr/?/init.lua"
-      
       require("czc-hyprland")
     '';
+    plugins = [];
   };
 
   # --- XR / VR Configurations ---
@@ -141,22 +149,20 @@ in {
     };
   };
   
-  systemd.user.services.spatial-canvas = {
-    Unit = {
-      Description = "Headless Kiosk Compositor Canvas for XR Workspace";
-      After = [ "graphical-session.target" ];
-    };
-    Service = {
-      # CRITICAL: Systemd services must have an ExecStart. Add your compositor command here:
-      # ExecStart = "${pkgs.cage}/bin/cage -- /path/to/your/app";
-      Environment = [
-        "WLR_BACKENDS=headless"
-        "WLR_RENDERER=vulkan"
-        "WLR_HEADLESS_OUTPUTS=1"
-      ];
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
-  };
+#  systemd.user.services.spatial-canvas = {
+#    Unit = {
+#      Description = "Headless Kiosk Compositor Canvas for XR Workspace";
+#      After = [ "graphical-session.target" ];
+#    };
+#    Service = {
+#      Environment = [
+#        "WLR_BACKENDS=headless"
+#        "WLR_RENDERER=vulkan"
+#        "WLR_HEADLESS_OUTPUTS=1"
+#      ];
+#    };
+#    Install = {
+#      WantedBy = [ "graphical-session.target" ];
+#    };
+#  };
 }
