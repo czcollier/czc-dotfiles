@@ -17,7 +17,7 @@ function M.handle_switch(lid_state)
   if lid_state == "closed" then
     hl.monitor({ output = "eDP-1", disabled = true })
   else
-    hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = 1 })
+    hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto" })
   end
 
 end
@@ -27,7 +27,7 @@ hl.bind("switch:on:Lid Switch", function()
 end)
 
 hl.bind("switch:off:Lid Switch", function()
-  hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = 1 })
+  hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto" })
   os.execute("hyprctl reload")
 end, { locked = true })
 

@@ -16,50 +16,48 @@ lid.handle_switch(lid_state)
 
 --local cursor_theme = "Bibata-Modern-Classic" 
 local cursor_theme = "RosePine-Hypr"
+local cursor_size = "32"
+local home_dir = os.getenv("HOME")
+
 -- ==========================================
 -- Environment Variables
 -- ==========================================
 -- Explicitly define XDG specs so portals don't crash
-hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
 hl.env("XDG_SESSION_TYPE", "wayland")
 hl.env("XDG_SESSION_DESKTOP", "Hyprland")
 
-hl.env("WLR_NO_HARDWARE_CURSORS", "1")
 hl.env("PROTOCOL_TIMEOUT", "1")
-hl.env("PATH", os.getenv("HOME") .. "/.nix-profile/bin:" .. os.getenv("PATH"))
-hl.env("SSH_AUTH_SOCK", "/home/czcollier/.tmp/.czcollier.ssh_auth_sock")
+hl.env("PATH", home_dir .. "/.nix-profile/bin:" .. os.getenv("PATH"))
+hl.env("SSH_AUTH_SOCK", home_dir .. "/.tmp/.czcollier.ssh_auth_sock")
 
 hl.env("HYPRCURSOR_THEME", cursor_theme)
-hl.env("HYPRCURSOR_SIZE", "32")
+hl.env("HYPRCURSOR_SIZE", cursor_size)
 
-hl.env("XCURSOR_THEME", "Adwaita")
-hl.env("XCURSOR_SIZE", "24")
+hl.env("XCURSOR_THEME", cursor_theme)
+hl.env("XCURSOR_SIZE", cursor_size)
 
 hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
 
--- ==========================================
--- Startup
--- ==========================================
+-- 1. Declare XDG_DATA_DIRS globally BEFORE the startup hook
+-- This ensures Hyprland, DBus, systemd, and Noctalia all inherit the exact same string
+hl.env("XDG_DATA_DIRS", home_dir .. "/.local/share:" .. home_dir .. "/.local/state/nix/profiles/profile/share:/usr/local/share:/usr/share")
+
 hl.on("hyprland.start", function ()
-  -- Clear any dead portal states and import variables
-  hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_DATA_DIRS")
+  -- 2. Sync DBus/Systemd and restart portals sequentially
+  -- Wrapping this in 'bash -c' with '&&' guarantees the DBus environment updates 
+  -- entirely BEFORE the portals are told to restart.
+  hl.exec_cmd("bash -c 'dbus-update-activation-environment --systemd SSH_AUTH_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_DATA_DIRS XDG_SESSION_TYPE XDG_SESSION_DESKTOP && systemctl --user restart xdg-desktop-portal-hyprland xdg-desktop-portal'")
 
-  -- Force-restart the portals so they register the ScreenCast interface
-  hl.exec_cmd("systemctl --user stop xdg-desktop-portal xdg-desktop-portal-hyprland")
-  hl.exec_cmd("systemctl --user start xdg-desktop-portal-hyprland xdg-desktop-portal")
-
-  -- 1. Push the XDG state into systemd so the portals actually boot
-  hl.exec_cmd("dbus-update-activation-environment --systemd SSH_AUTH_SOCK WAYLAND_DISPLAY XDG_RUNTIME_DIR XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XDG_SESSION_DESKTOP")
-  
-  -- 2. Boot the portals and agents
+  -- 3. Boot agents
   hl.exec_cmd("/usr/lib/x86_64-linux-gnu/libexec/polkit-kde-authentication-agent-1")
-  hl.exec_cmd("/usr/lib/xdg-desktop-portal-hyprland")
-  hl.exec_cmd("hypridle")
-  --hl.exec_cmd("awww-daemon")
   
-  -- 3. Boot noctalia with inline XDG_DATA_DIRS exactly like the .conf
-  hl.exec_cmd("PATH=$HOME/.config/noctalia/bin:$PATH XDG_DATA_DIRS=/usr/local/share" ..
-  ":/usr/share:$HOME/.local/state/nix/profiles/profile/share:$XDG_DATA_DIRS noctalia")
+  -- 4. Boot background services
+  hl.exec_cmd("hypridle")
   hl.exec_cmd("wl-paste --watch cliphist store")
+  
+  -- 5. Boot Noctalia
+  -- Because XDG_DATA_DIRS was set globally via hl.env, we don't need the inline override.
+  -- We just need to inject your custom bin path.
+  hl.exec_cmd("PATH=$HOME/.config/noctalia/bin:$PATH noctalia")
 end)
 

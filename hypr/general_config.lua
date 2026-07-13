@@ -13,10 +13,52 @@ hl.monitor({
     scale = 1
 })
 
+hl.monitor({
+    output = "eDP-1",
+    mode = "preferred",
+    position = "auto",
+    scale = 1
+})
+
 hl.device({
   name= "SpatialProductivityKeyboard", 
   enabled = false
 })
+
+local function update_aspect_ratio(monitor_name)
+    if not monitor_name then return end
+
+    if monitor_name == "DP-1" then
+        hl.config({
+            layout = { single_window_aspect_ratio = { 4, 3 } }
+        })
+    elseif monitor_name == "eDP-1" then
+        hl.config({
+            layout = { single_window_aspect_ratio = { 16, 9 } }
+        })
+    else
+        hl.config({
+            layout = { single_window_aspect_ratio = { 0, 0 } }
+        })
+    end
+end
+
+-- 2. Catch the explicit "workspace migrated to a new display" event
+hl.on("workspace.move_to_monitor", function(mon)
+    if not mon then return end
+    update_aspect_ratio(mon.name)
+end)
+
+-- 3. Safety net for direct monitor focus changes
+hl.on("monitor.focused", function(mon)
+    if not mon then return end
+    update_aspect_ratio(mon.name)
+end)
+
+hl.on("workspace.active", function(ws)
+    if not ws then return end
+    update_aspect_ratio(ws.monitor.name)
+end)
 
 -- Suppress the VR keyboard bridge on the physical desktop.
 -- Events from this device go to headless sway (wayland-2) → foot in VR only.
@@ -47,9 +89,8 @@ hl.config({
         layout = "dwindle",
         resize_on_border = true
     },
-
     layout = {
-      single_window_aspect_ratio = { 4, 3 }
+      single_window_aspect_ratio = { 16, 9 }
     },
     cursor = {
       zoom_factor = 1.0,

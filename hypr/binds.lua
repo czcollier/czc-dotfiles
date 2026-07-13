@@ -34,7 +34,8 @@ hl.bind( "SUPER + ALT + P", function() google_pwas.launch_or_focus_pwas() end)
 
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),   { mouse = true, description = "drag window" })
 hl.bind("SUPER + ALT + mouse:272", hl.dsp.window.resize(), { mouse = true, description = "resize window" })
-    -- window focus --
+
+-- window focus --
 hl.bind("SUPER + K", hl.dsp.focus({ direction = "up" }), { description = "focus window up" })
 hl.bind("SUPER + J", hl.dsp.focus({ direction = "down" }), { description = "focus window down" })
 
@@ -66,7 +67,9 @@ hl.bind("SUPER + SHIFT + mouse:272", hl.dsp.window.move({ direction = "left" }),
 hl.bind("SUPER + SHIFT + mouse:273", hl.dsp.window.move({ direction = "right" }), { description = "move window right via mouse" })
 hl.bind("SUPER + SHIFT + mouse_down", hl.dsp.window.move({ direction = "down" }), { description = "move window down via scroll" })
 hl.bind("SUPER + SHIFT + mouse_up", hl.dsp.window.move({ direction = "up" }), { description = "move window up via scroll" })
+
 --- misc window operations ---
+
 --- float and center active window ---
 hl.bind("SUPER + SHIFT + Space", function()
   hl.dispatch(hl.dsp.window.float())
@@ -77,6 +80,7 @@ hl.bind("SUPER + SHIFT + Space", function()
   }))
   hl.dispatch(hl.dsp.window.center())
 end, { description = "float and center active window" })
+
 hl.bind("SUPER + SHIFT + P", hl.dsp.window.pseudo({ action = "toggle" }), { description = "toggle pseudo layout" })
 hl.bind("SUPER + SHIFT + F", hl.dsp.window.fullscreen({ action= "toggle", mode = "fullscreen" }), { description = "toggle fullscreen" })
 hl.bind("SUPER + SHIFT + ALT + F", hl.dsp.window.fullscreen_state({ client = 3, internal = 3, action = "set" }))
@@ -168,6 +172,10 @@ hl.bind("CTRL + SHIFT + J", hl.dsp.window.resize({
   relative = true
 }), { repeating = true, description = "resize window down" })
 
+-- center the layout -- only works on dwindle layout
+hl.bind("CTRL + SHIFT + I", hl.dsp.layout("splitratio 1.0 exact"),
+  { description = "center the split" })
+
 --- window opacity ---
 local window_opacities = {}
 
@@ -233,23 +241,23 @@ local function step_saturation(direction)
     end
     saturation.set_saturation(memory_saturation)
 end
+--- Night time and sunlight monochrome modes ---
+hl.bind("SUPER + SHIFT + N", function() saturation.toggle_night_mode() end, { description = "toggle night mode" })
+hl.bind("SUPER + SHIFT + S", function() saturation.toggle_sunlight_mode() end, { description = "toggle sunlight mode" })
+-- Special Hidden Workspace ---
+hl.bind("SUPER + X", hl.dsp.window.move({
+  workspace = "special:hidden", follow = false }), { description = "move window to hidden workspace" }, { description = "toggle sunlight mode" })
 
+--- end saturation ---
 
--- Media ---
+-- media ---
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"), { description = "raise audio volume" })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { description = "lower audio volume" })
 hl.bind("XF86MonBrightnessUp", function() brightness.adjust("+") end, { description = "increase screen brightness" })
 hl.bind("XF86MonBrightnessDown", function() brightness.adjust("-") end, { description = "decrease screen brightness" })
 hl.bind("SUPER + XF86MonBrightnessUp", function() step_saturation("up") end, { repeating = true, description = "increase color saturation" })
 hl.bind("SUPER + XF86MonBrightnessDown", function() step_saturation("down") end, { repeating = true, description = "decrease color saturation" })
---- end saturation ---
 
---- Night time monochrome mode ---
-hl.bind("SUPER + SHIFT + N", function() saturation.toggle_night_mode() end, { description = "toggle night mode" })
-
--- Special Hidden Workspace ---
-hl.bind("SUPER + CTRL + X", hl.dsp.window.move({
-  workspace = "special:hidden", follow = false }), { description = "move window to hidden workspace" })
 
 hl.bind("SUPER + TAB", function()
   sws = hl.get_workspace("special:hidden")
@@ -431,7 +439,7 @@ hl.bind("CTRL + SHIFT + ALT + M", function()
     local target_monitor = (current_mon == "eDP-1") and "DP-1" or "eDP-1"
 
       local notify_cmd = string.format(
-        [[notify-send "current: %s"]], active_ws.monitor.name)
+        [[notify-send "current: %s"]], target_monitor)
       hl.exec_cmd(notify_cmd)
     -- Move the active workspace to the other monitor output
     hl.dispatch(hl.dsp.workspace.move({ 

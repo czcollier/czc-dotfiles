@@ -19,7 +19,7 @@ hl.window_rule {
     },
     opacity = 0.85,
     rounding = 2,
-    --no_anim = true,
+    no_anim = true,
     border_color = { colors = {"rgba(cc6699ee)", "rgba(cc9966ee)"}, angle = 45 },
 }
 
@@ -30,7 +30,7 @@ hl.window_rule {
     },
     opacity = 0.85,
     rounding = 2,
-    --no_anim = true,
+    no_anim = true,
     border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
 }
 
@@ -80,6 +80,17 @@ hl.layer_rule {
   blur = true,
   blur_popups = true
 }
+
+hl.layer_rule({
+  name = "noctalia",
+  match = {
+    namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$",
+  },
+  no_anim = true,
+  ignore_alpha = 0.5,
+  blur = true,
+  blur_popups = true,
+})
 
 hl.layer_rule {
   name = "noctalia-widgets",
