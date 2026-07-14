@@ -39,7 +39,7 @@ hl.bind("SUPER + ALT + mouse:272", hl.dsp.window.resize(), { mouse = true, descr
 hl.bind("SUPER + K", hl.dsp.focus({ direction = "up" }), { description = "focus window up" })
 hl.bind("SUPER + J", hl.dsp.focus({ direction = "down" }), { description = "focus window down" })
 
-function horiz_focus(direction)
+local function horiz_focus(direction)
     local current_layout = hl.get_active_workspace().tiled_layout
     if current_layout == "scrolling" then 
         hl.dispatch(hl.dsp.layout("focus " .. direction))
@@ -246,7 +246,7 @@ hl.bind("SUPER + SHIFT + N", function() saturation.toggle_night_mode() end, { de
 hl.bind("SUPER + SHIFT + S", function() saturation.toggle_sunlight_mode() end, { description = "toggle sunlight mode" })
 -- Special Hidden Workspace ---
 hl.bind("SUPER + X", hl.dsp.window.move({
-  workspace = "special:hidden", follow = false }), { description = "move window to hidden workspace" }, { description = "toggle sunlight mode" })
+  workspace = "special:hidden", follow = false }), { description = "move window to hidden workspace" })
 
 --- end saturation ---
 
@@ -260,7 +260,7 @@ hl.bind("SUPER + XF86MonBrightnessDown", function() step_saturation("down") end,
 
 
 hl.bind("SUPER + TAB", function()
-  sws = hl.get_workspace("special:hidden")
+  local sws = hl.get_workspace("special:hidden")
   if sws and not sws.active then
     hl.dispatch(hl.dsp.workspace.toggle_special("hidden"))
     hl.dispatch(hl.dsp.submap("hdn2"))
@@ -268,7 +268,7 @@ hl.bind("SUPER + TAB", function()
 end, { description = "toggle hidden workspace submap" })
 
 local select_from_hidden = (function(ws_name)
-  sws = hl.get_workspace("special:" .. ws_name)
+  local sws = hl.get_workspace("special:" .. ws_name)
   if not sws or not sws.windows then
     hl.dispatch(hl.dsp.workspace.toggle_special(ws_name))
   elseif sws.active then
@@ -305,7 +305,7 @@ hl.define_submap("hdn_select", function()
 end)
 
 --- special magic terminal ---
-function toggle_special_magic(magic_name)
+local function toggle_special_magic(magic_name)
   local windows = hl.get_windows()
   local magic_win = nil
   for _, win in ipairs(windows) do
@@ -351,7 +351,7 @@ end)
 --- layout switcher ---
 local last_layout_msg_id = ""
 
-function exec_with_stdout(cmd)
+local function exec_with_stdout(cmd)
   local handle = io.popen(cmd)
   if handle ~= nil then
       local ret = handle:read("*a"):gsub("\n$", "")

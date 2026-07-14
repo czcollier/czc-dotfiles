@@ -1,8 +1,8 @@
 hl.workspace_rule({
   workspace = "special:hidden",
   layout = "scrolling",
-  gaps_in = "15",
-  gaps_out = "300",
+  gaps_in = 15,
+  gaps_out = 300,
 })
 
 hl.workspace_rule({ workspace = "1", persistent = true })

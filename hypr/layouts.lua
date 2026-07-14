@@ -36,14 +36,14 @@ hl.layout.register("work", {
 
         -- Define logic for splitting the space
         -- 1. Split the screen into Left (Chrome) and Right (Everything else)
-        local left, right = ctx:split(ctx.area, 0.5)
+        local left, right = ctx:split(ctx.area, 'left', 0.5)
 
         if chrome then chrome:place(left) end
 
         if cider then
             if magic_foot then
                 -- 2. Split the Right side into Top (Cider) and Bottom (Magic Foot)
-                local cider_area, foot_area = ctx:split(right, 0.7, "vertical")
+                local cider_area, foot_area = ctx:split(ctx.area, 'right', 0.7)
                 cider:place(cider_area)
                 magic_foot:place(foot_area)
             else

@@ -1,6 +1,6 @@
-active_border_color = { colors = {"rgba(33cc99ee)", "rgba(00ff99ee)"}, angle = 45 }
+local active_border_color = { colors = {"rgba(33cc99ee)", "rgba(00ff99ee)"}, angle = 45 }
 --active_border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
-inactive_border_color = { colors = { "rgba(272727bb)" } }
+local inactive_border_color = { colors = { "rgba(272727bb)" } }
 
 --hl.monitor({ output = "VR-1", mode = "5760x4320@60", position = "auto", scale = 1.5 })
 --hl.monitor({ output = "HDMI-A-1", mode = "1920x1200@60", position = "auto", scale = 1.5 })
@@ -21,7 +21,7 @@ hl.monitor({
 })
 
 hl.device({
-  name= "SpatialProductivityKeyboard", 
+  name= "SpatialProductivityKeyboard",
   enabled = false
 })
 
