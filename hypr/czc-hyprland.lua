@@ -1,5 +1,5 @@
 local brightness = require("brightness")
-local lid = require("lid")
+local lid = require("lid2")
 local general = require("general_config")
 local binds = require("binds")
 local rules = require("rules")
@@ -9,9 +9,9 @@ local power_profile = require("power_profile")
 local layouts = require("layouts")
 
 -- Monitor configuration
-local lid_state = lid.get_lid_state()
+--local lid_state = lid.get_lid_state()
 -- check the lid state on reconfiguration/startup
-lid.handle_switch(lid_state)
+--lid.handle_switch(lid_state)
 
 
 --local cursor_theme = "Bibata-Modern-Classic" 

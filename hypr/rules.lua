@@ -9,8 +9,6 @@ hl.workspace_rule({ workspace = "1", persistent = true })
 hl.workspace_rule({ workspace = "2", persistent = true })
 hl.workspace_rule({ workspace = "3", persistent = true })
 hl.workspace_rule({ workspace = "4", persistent = true })
-hl.workspace_rule({ workspace = "10", monitor = "HDMI-A-1", persistent = true })
-
 
 hl.window_rule {
     name = "magic_home",
@@ -19,7 +17,7 @@ hl.window_rule {
     },
     opacity = 0.85,
     rounding = 2,
-    no_anim = true,
+    --no_anim = true,
     border_color = { colors = {"rgba(cc6699ee)", "rgba(cc9966ee)"}, angle = 45 },
 }
 
@@ -30,7 +28,7 @@ hl.window_rule {
     },
     opacity = 0.85,
     rounding = 2,
-    no_anim = true,
+    --no_anim = true,
     border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
 }
 
@@ -107,12 +105,4 @@ local suppressMaximizeRule = hl.window_rule({
     match = { class = ".*" },
 
     suppress_event = "maximize",
-})
-
-hl.window_rule({
-    name = "sandbox-monado-title",
-    match = { title = "^(Monado.*)$" },
-    monitor = "HDMI-A-1",
-    fullscreen = true,
-    workspace = "10 silent",
 })

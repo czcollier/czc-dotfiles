@@ -2,17 +2,6 @@ local active_border_color = { colors = {"rgba(33cc99ee)", "rgba(00ff99ee)"}, ang
 --active_border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
 local inactive_border_color = { colors = { "rgba(272727bb)" } }
 
---hl.monitor({ output = "VR-1", mode = "5760x4320@60", position = "auto", scale = 1.5 })
---hl.monitor({ output = "HDMI-A-1", mode = "1920x1200@60", position = "auto", scale = 1.5 })
--- Release the HTC Vive's port for DRM leasing
--- Explicitly configure the Vive to bypass the 'non-desktop' flag
-hl.monitor({
-    output = "HDMI-A-1",
-    mode = "2160x1200@90",
-    position = "auto",
-    scale = 1
-})
-
 hl.monitor({
     output = "eDP-1",
     mode = "preferred",
@@ -20,52 +9,6 @@ hl.monitor({
     scale = 1
 })
 
-hl.device({
-  name= "SpatialProductivityKeyboard",
-  enabled = false
-})
-
-local function update_aspect_ratio(monitor_name)
-    if not monitor_name then return end
-
-    if monitor_name == "DP-1" then
-        hl.config({
-            layout = { single_window_aspect_ratio = { 4, 3 } }
-        })
-    elseif monitor_name == "eDP-1" then
-        hl.config({
-            layout = { single_window_aspect_ratio = { 16, 9 } }
-        })
-    else
-        hl.config({
-            layout = { single_window_aspect_ratio = { 0, 0 } }
-        })
-    end
-end
-
--- 2. Catch the explicit "workspace migrated to a new display" event
-hl.on("workspace.move_to_monitor", function(mon)
-    if not mon then return end
-    update_aspect_ratio(mon.name)
-end)
-
--- 3. Safety net for direct monitor focus changes
-hl.on("monitor.focused", function(mon)
-    if not mon then return end
-    update_aspect_ratio(mon.name)
-end)
-
-hl.on("workspace.active", function(ws)
-    if not ws then return end
-    update_aspect_ratio(ws.monitor.name)
-end)
-
--- Suppress the VR keyboard bridge on the physical desktop.
--- Events from this device go to headless sway (wayland-2) → foot in VR only.
-hl.device({
-  name = "virtual-vr-keyboard",
-  enabled = false
-})
 
 hl.config({
     input = {
@@ -76,7 +19,7 @@ hl.config({
         touchpad = {
             natural_scroll = true,
             disable_while_typing = true
-        }
+        },
     },
     general = {
         gaps_in = 5,
@@ -90,15 +33,15 @@ hl.config({
         resize_on_border = true
     },
     layout = {
-      single_window_aspect_ratio = { 16, 9 }
+      single_window_aspect_ratio = { 4, 3 }
     },
     cursor = {
       zoom_factor = 1.0,
-      hide_on_key_press = true
+      hide_on_key_press = true,
+      zoom_factor = 1.0
     },
-
     decoration = {
-        rounding = 8,
+        rounding = 12,
         rounding_power = 2,
         active_opacity = 1.0,
         inactive_opacity = 1.0,
@@ -183,7 +126,11 @@ hl.config({
         mouse_move_enables_dpms = true,
         key_press_enables_dpms = true,
         force_default_wallpaper = 0,
-        disable_hyprland_logo = true
+        disable_hyprland_logo = true,
+        allow_session_lock_restore = true
+    },
+    binds = {
+      hide_special_on_workspace_change = true
     },
     render = {
         direct_scanout = 1,

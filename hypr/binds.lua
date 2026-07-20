@@ -118,10 +118,9 @@ hl.bind("SUPER + CTRL + SHIFT + 9", hl.dsp.window.move({ workspace = "3", follow
 hl.bind("SUPER + CTRL + SHIFT + 0", hl.dsp.window.move({ workspace = "4", follow = false }), { description = "move window to workspace 4" })
 hl.bind("SUPER + CTRL + SHIFT + v", hl.dsp.window.move({ workspace = "10", follow = false }), { description = "move window to workspace 10" })
 
-
-hl.bind("CTRL + ALT + L", hl.dsp.workspace.move({ monitor = "+1"}), { description = "move workspace to the next monitor" })
-hl.bind("CTRL + ALT + H", hl.dsp.workspace.move({ monitor = "-1"}), { description = "move workspace to the previous monitorleft" })
---hl.bind("CTRL + SHIFT + ALT + M", hl.dsp.workspace.swap_monitors({monitor1 = "eDP-1", monitor2 = "DP-1"}), { description = "swap" })
+hl.bind("CTRL + SHIFT + ALT + L", hl.dsp.workspace.move({ monitor = "+1"}), { description = "move workspace to the next monitor" })
+hl.bind("CTRL + SHIFT + ALT + H", hl.dsp.workspace.move({ monitor = "-1"}), { description = "move workspace to the previous monitorleft" })
+hl.bind("CTRL + SHIFT + ALT + M", hl.dsp.workspace.swap_monitors({monitor1 = "eDP-1", monitor2 = "DP-1"}), { description = "swap" })
 
 --- dwindle layout bindings ---
 hl.bind("SUPER + S", hl.dsp.layout("togglesplit"), { description = "toggle layout split" })
@@ -349,7 +348,6 @@ end)
 
     
 --- layout switcher ---
-local last_layout_msg_id = ""
 
 local function exec_with_stdout(cmd)
   local handle = io.popen(cmd)
@@ -360,6 +358,8 @@ local function exec_with_stdout(cmd)
   end
   return ""
 end
+
+local last_layout_msg_id = ""
 
 local layouts = { "dwindle", "master", "scrolling", "monocle" }
 hl.bind("SUPER + W", function()
@@ -377,8 +377,16 @@ hl.bind("SUPER + W", function()
         workspace = tostring(wa.id), 
         layout = layouts[next_idx] 
     })
-    local cmd = string.format("notify-send " .. [[-p "Layout" "%s"]], last_layout_msg_id, layouts[next_idx])
+    
+    local replace_str = "foo "
+    if last_layout_msg_id == "" then
+    else
+      local replace_str = "-r " .. last_layout_msg_id .. " "
+    end
+
+    local cmd = string.format("notify-send " .. replace_str .. [[-p "Layout" "%s %s"]], replace_str, layouts[next_idx])
     last_layout_msg_id = exec_with_stdout(cmd)
+    hl.exec_cmd('notify-send "' .. cmd .. '"')
 end, { description = "Cycle workspace layout" })
 
 
@@ -451,4 +459,3 @@ end, { description = "Swap active workspace to the other monitor" })
 
 hl.bind("CTRL + SHIFT + ALT + RETURN", hl.dsp.exec_cmd("WAYLAND_DISPLAY=wayland-20 wtype -M logo Return"))
 hl.bind("CTRL + SHIFT + ALT + Q", hl.dsp.exec_cmd("WAYLAND_DISPLAY=wayland-20 wtype -M shift q"))
-  
