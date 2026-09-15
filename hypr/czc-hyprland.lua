@@ -1,5 +1,5 @@
 local brightness = require("brightness")
-local lid = require("lid2")
+local lid = require("lid3")
 local general = require("general_config")
 local binds = require("binds")
 local rules = require("rules")
@@ -59,5 +59,6 @@ hl.on("hyprland.start", function ()
   -- Because XDG_DATA_DIRS was set globally via hl.env, we don't need the inline override.
   -- We just need to inject your custom bin path.
   hl.exec_cmd("PATH=$HOME/.config/noctalia/bin:$PATH noctalia")
+  hl.exec_cmd("hyprswitch init --show-title")
 end)
 

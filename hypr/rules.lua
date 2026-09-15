@@ -33,6 +33,16 @@ hl.window_rule {
 }
 
 hl.window_rule {
+    name = "magic_obsidian",
+    match = { 
+      class = "obsidian"
+    },
+    opacity = 0.85,
+    --no_anim = true,
+    border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
+}
+
+hl.window_rule {
     name = "system_dialogs",
     match = { 
       class = "^xdg-desktop-portal-gtk$"

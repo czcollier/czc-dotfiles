@@ -8,6 +8,14 @@ function M.write_to_file(str, filename)
   end
 end
 
+function M.append_to_file(str, filename)
+  local f = io.open(filename, "a")
+  if f ~= nil then
+      f:write(str)
+      f:close()
+  end
+end
+
 function M.inspectTable(tbl, indent)
     indent = indent or ""
     if type(tbl) ~= "table" then return tostring(tbl) end

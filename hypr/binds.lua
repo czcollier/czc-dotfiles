@@ -19,6 +19,7 @@ local saturationIncrement = 10
 --- utilities - typically SUPER + ALT .. ---
 hl.bind("SUPER + SLASH", hl.dsp.exec_cmd(noctalia_ipc .. " plugin:keybind-cheatsheet toggle"), { description = "toggle the keybind cheatsheet" })
 hl.bind("SUPER + SPACE", hl.dsp.exec_cmd(noctalia_ipc .. "panel-toggle launcher"), { description = "toggle noctalia app launcher" })
+hl.bind("ALT + TAB", hl.dsp.exec_cmd(noctalia_ipc .. "window-switcher"))
 hl.bind("SUPER + Q", hl.dsp.window.close(), { description = "close the current window" })
 
 hl.bind("SUPER + ALT + M",
@@ -54,8 +55,11 @@ local function horiz_focus(direction)
     end
 end
 
-hl.bind("SUPER + L", function() horiz_focus("right") end, { description = "focus window right" })
 hl.bind("SUPER + H", function() horiz_focus("left") end, { description = "focus window left" })
+hl.bind("SUPER + L", function() horiz_focus("right") end, { description = "focus window right" })
+
+-- hl.bind("ALT + mouse:272", function() horiz_focus("left") end, { release = true, description = "focus window left via mouse" })
+--hl.bind("ALT + mouse:273", function() horiz_focus("right") end, { release = true, description = "focus window right via mouse" })
 
 --- move windows ---
 hl.bind("SUPER + SHIFT + H", hl.dsp.window.move({ direction = "left" }), { description = "move window left" })
@@ -81,19 +85,22 @@ hl.bind("SUPER + SHIFT + Space", function()
   hl.dispatch(hl.dsp.window.center())
 end, { description = "float and center active window" })
 
+hl.bind("SUPER + SHIFT + I", hl.dsp.window.pin())
+
 hl.bind("SUPER + SHIFT + P", hl.dsp.window.pseudo({ action = "toggle" }), { description = "toggle pseudo layout" })
 hl.bind("SUPER + SHIFT + F", hl.dsp.window.fullscreen({ action= "toggle", mode = "fullscreen" }), { description = "toggle fullscreen" })
 hl.bind("SUPER + SHIFT + ALT + F", hl.dsp.window.fullscreen_state({ client = 3, internal = 3, action = "set" }))
 
 --- alt-tab approximation ---
-hl.bind("ALT + Tab", function()
-    hl.dispatch(hl.dsp.window.cycle_next())    -- Change focus to another window
-    hl.dispatch(hl.dsp.window.bring_to_top()) -- Bring it to the top
-end, { description = "cycle to next window" })
+-- hl.bind("ALT + Tab", function()
+--     hl.dispatch(hl.dsp.window.cycle_next())    -- Change focus to another window
+--     hl.dispatch(hl.dsp.window.bring_to_top()) -- Bring it to the top
+-- end, { description = "cycle to next window" })
 
 --- workspace focus ---
 hl.bind("SUPER + CTRL + H", hl.dsp.focus({ workspace = "e-1" }), { description = "focus previous workspace" })
 hl.bind("SUPER + CTRL + L", hl.dsp.focus({ workspace = "e+1" }), { description = "focus next workspace" })
+
 hl.bind("SUPER + CTRL + mouse:272", hl.dsp.focus({ workspace = "e-1" }), { description = "focus previous workspace via mouse" })
 hl.bind("SUPER + CTRL + mouse:273", hl.dsp.focus({ workspace = "e+1" }), { description = "focus next workspace via mouse" })
 
@@ -103,6 +110,9 @@ hl.bind("SUPER + CTRL + 9", hl.dsp.focus({ workspace = "3" }), { description = "
 hl.bind("SUPER + CTRL + 0", hl.dsp.focus({ workspace = "4" }), { description = "focus workspace 4" })
 hl.bind("SUPER + CTRL + MINUS", hl.dsp.focus({ workspace = "5" }), { description = "focus workspace 5" })
 
+--- monitor focus ---
+hl.bind("CTRL + ALT + H", hl.dsp.focus({ monitor = "-1" }), { description = "focus previous monitor" })
+hl.bind("CTRL + ALT + L", hl.dsp.focus({ monitor = "+1" }), { description = "focus next monitor" })
 
 
 --- move windows between workspaces ---
@@ -118,12 +128,15 @@ hl.bind("SUPER + CTRL + SHIFT + 9", hl.dsp.window.move({ workspace = "3", follow
 hl.bind("SUPER + CTRL + SHIFT + 0", hl.dsp.window.move({ workspace = "4", follow = false }), { description = "move window to workspace 4" })
 hl.bind("SUPER + CTRL + SHIFT + v", hl.dsp.window.move({ workspace = "10", follow = false }), { description = "move window to workspace 10" })
 
+
+
 hl.bind("CTRL + SHIFT + ALT + L", hl.dsp.workspace.move({ monitor = "+1"}), { description = "move workspace to the next monitor" })
 hl.bind("CTRL + SHIFT + ALT + H", hl.dsp.workspace.move({ monitor = "-1"}), { description = "move workspace to the previous monitorleft" })
 hl.bind("CTRL + SHIFT + ALT + M", hl.dsp.workspace.swap_monitors({monitor1 = "eDP-1", monitor2 = "DP-1"}), { description = "swap" })
 
 --- dwindle layout bindings ---
 hl.bind("SUPER + S", hl.dsp.layout("togglesplit"), { description = "toggle layout split" })
+hl.bind("SUPER + comma", hl.dsp.layout("rotatesplit"), { angle = "90", description = "toggle layout split" })
 
 --- scrolling layout bindings ---
 hl.bind("SUPER + F", hl.dsp.layout("fit visible"), { description = "fit visible windows" })
@@ -144,6 +157,42 @@ hl.define_submap("group", "reset", function()
   hl.bind("K", hl.dsp.window.move({ into_group = "up" }), { description = "move into group up" }) -- Bring it to the top
   hl.bind("L", hl.dsp.window.move({ into_group = "right" }), { description = "move into group right" }) -- Bring it to the top
   hl.bind("escape", hl.dsp.submap("reset"), { description = "exit group submap" })
+end)
+
+
+hl.define_submap("movewindow", function()
+  hl.bind("ESCAPE", function()
+    hl.dispatch(hl.dsp.submap("reset"))
+  end, { description = "exit hidden move window" })
+  hl.bind("L", function()
+    awn = hl.get_active_window()
+    if awn.floating then
+      hl.dispatch(hl.dsp.window.move({ window = awn, x = 60, y = 0, relative = true }))
+    end
+  end, { repeating = true, description = "move window right"})
+  hl.bind("H", function()
+    awn = hl.get_active_window()
+    if awn.floating then
+      hl.dispatch(hl.dsp.window.move({ window = awn, x = -60, y = 0, relative = true }))
+    end
+  end, { repeating = true, description = "move window right"})
+  hl.bind("K", function()
+    awn = hl.get_active_window()
+    if awn.floating then
+      hl.dispatch(hl.dsp.window.move({ window = awn, x = 0, y = -60, relative = true }))
+    end
+  end, { repeating = true, description = "move window down"})
+  hl.bind("J", function()
+    awn = hl.get_active_window()
+    if awn.floating then
+      hl.dispatch(hl.dsp.window.move({ window = awn, x = 0, y = 60, relative = true }))
+    end
+  end, { repeating = true, description = "move window up"})
+end)
+
+
+hl.bind("CTRL + SHIFT + M", function() 
+  hl.dispatch(hl.dsp.submap("movewindow"))
 end)
 
 --- Window Resizing ---
@@ -243,10 +292,6 @@ end
 --- Night time and sunlight monochrome modes ---
 hl.bind("SUPER + SHIFT + N", function() saturation.toggle_night_mode() end, { description = "toggle night mode" })
 hl.bind("SUPER + SHIFT + S", function() saturation.toggle_sunlight_mode() end, { description = "toggle sunlight mode" })
--- Special Hidden Workspace ---
-hl.bind("SUPER + X", hl.dsp.window.move({
-  workspace = "special:hidden", follow = false }), { description = "move window to hidden workspace" })
-
 --- end saturation ---
 
 -- media ---
@@ -257,6 +302,23 @@ hl.bind("XF86MonBrightnessDown", function() brightness.adjust("-") end, { descri
 hl.bind("SUPER + XF86MonBrightnessUp", function() step_saturation("up") end, { repeating = true, description = "increase color saturation" })
 hl.bind("SUPER + XF86MonBrightnessDown", function() step_saturation("down") end, { repeating = true, description = "decrease color saturation" })
 
+
+-- Special Hidden Workspace ---
+local pinned_history = {}
+local float_history = {}
+
+hl.bind("SUPER + X", function()
+  local active_window = hl.get_active_window()
+  if active_window.pinned then
+    pinned_history[active_window.address] = true
+    hl.dispatch(hl.dsp.window.pin({ window = active_window, action = "toggle" }))
+  end
+  if active_window.floating then
+    float_history[active_window.address] = true
+    hl.dispatch(hl.dsp.window.float({ window = active_window, action = "toggle" }))
+  end
+  hl.dispatch(hl.dsp.window.move({ workspace = "special:hidden", follow = false }))
+end, { description = "move window to hidden workspace" })
 
 hl.bind("SUPER + TAB", function()
   local sws = hl.get_workspace("special:hidden")
@@ -271,16 +333,36 @@ local select_from_hidden = (function(ws_name)
   if not sws or not sws.windows then
     hl.dispatch(hl.dsp.workspace.toggle_special(ws_name))
   elseif sws.active then
+    active_window = hl.get_active_window()
+    if pinned_history[active_window.address] then
+      hl.dispatch(hl.dsp.window.pin({ window = active_window, action = "toggle" }))
+    end
+    if float_history[active_window.address] then
+      hl.dispatch(hl.dsp.window.float({ window = active_window, action = "toggle" }))
+    end
     hl.dispatch(hl.dsp.window.move({ workspace = "+0" }))
   end
   hl.dispatch(hl.dsp.submap("reset"))
 end)
+
 hl.bind("SUPER + RETURN", function()
   select_from_hidden("hidden")
 end, { description = "select window from hidden workspace" })
 
+
+local function is_cursor_in_window(window)
+  local cursor = hl.get_cursor_pos()
+  local at = window.at
+  local size = window.size
+
+  local inside_x = cursor.x >= at.x and cursor.x <= (at.x + size.x)
+  local inside_y = cursor.y >= at.y and cursor.y <= (at.y + size.y)
+
+  return inside_x and inside_y
+end
+
 hl.define_submap("hdn2", function()
-  hl.bind("SUPER + ESCAPE", function()
+  hl.bind("ESCAPE", function()
     hl.dispatch(hl.dsp.workspace.toggle_special("hidden"))
     hl.dispatch(hl.dsp.submap("reset"))
   end, { description = "exit hidden workspace submap" })
@@ -292,9 +374,15 @@ hl.define_submap("hdn2", function()
     select_from_hidden("hidden")
   end, { description = "restore selected hidden window" })
 
-  hl.bind("SUPER + SHIFT + mouse:272", function()
-    select_from_hidden("hidden")
-  end, { description = "restore selected hidden window via mouse" })
+  hl.bind("mouse:272", function()
+    local active_win = hl.get_active_window()
+    if is_cursor_in_window(active_win) then
+      select_from_hidden("hidden")
+    end
+  end, {
+    mouse = true,
+    click = true,
+    description = "restore selected hidden window via mouse" })
 end)
 
 hl.define_submap("hdn_select", function()
@@ -303,7 +391,8 @@ hl.define_submap("hdn_select", function()
   end, { release = true, description = "select window from hidden workspace" })
 end)
 
---- special magic terminal ---
+--- special magic terminals ---
+
 local function toggle_special_magic(magic_name)
   local windows = hl.get_windows()
   local magic_win = nil
@@ -313,14 +402,16 @@ local function toggle_special_magic(magic_name)
           break
         end
     end
+    local active_workspace = hl.get_active_workspace()
+
     if magic_win then
-        if magic_win.workspace ~= hl.get_active_workspace() then
+        if magic_win.workspace ~= active_workspace then
             hl.dispatch(hl.dsp.window.move({ window = magic_win, workspace = "e+0", follow = true }))
             hl.dispatch(hl.dsp.focus({ window = magic_win }))
-            -- 2. Shove it to the bottom-right of the dwindle layout
-            hl.dispatch(hl.dsp.window.move({ window = magic_win, direction = "d" }))
-            hl.dispatch(hl.dsp.window.move({ window = magic_win, direction = "r" }))
-           
+            -- move it to the bottom-right of the dwindle layout
+            --hl.dispatch(hl.dsp.window.move({ window = magic_win, direction = "d" }))
+            --hl.dispatch(hl.dsp.window.move({ window = magic_win, direction = "r" }))
+
             hl.dispatch(hl.dsp.layout("splitratio 0.3"))
         else
             hl.dispatch(hl.dsp.window.move({ window = magic_win, workspace = "special:magic_" .. magic_name, follow = false }))
@@ -444,6 +535,7 @@ hl.bind("CTRL + SHIFT + ALT + M", function()
     local current_mon = active_ws.monitor.name
     -- Determine the target monitor based on where you are currently looking
     -- If you are on the laptop screen (eDP-1), target the external monitor (DP-1), and vice-versa.
+    -- TODO: don't hard code to DP-1 external. Look for a non-eDP-1 monitor dynamically
     local target_monitor = (current_mon == "eDP-1") and "DP-1" or "eDP-1"
 
       local notify_cmd = string.format(
@@ -455,7 +547,3 @@ hl.bind("CTRL + SHIFT + ALT + M", function()
     }))
 end, { description = "Swap active workspace to the other monitor" })
 
-
-
-hl.bind("CTRL + SHIFT + ALT + RETURN", hl.dsp.exec_cmd("WAYLAND_DISPLAY=wayland-20 wtype -M logo Return"))
-hl.bind("CTRL + SHIFT + ALT + Q", hl.dsp.exec_cmd("WAYLAND_DISPLAY=wayland-20 wtype -M shift q"))

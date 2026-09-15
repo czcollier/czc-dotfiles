@@ -23,7 +23,7 @@ hl.config({
     },
     general = {
         gaps_in = 5,
-        gaps_out = 10,
+        gaps_out = { top = 10, left = 60, right = 60, bottom = 10 },
         border_size = 2,
         col = {
           active_border = active_border_color,
@@ -38,7 +38,6 @@ hl.config({
     cursor = {
       zoom_factor = 1.0,
       hide_on_key_press = true,
-      zoom_factor = 1.0
     },
     decoration = {
         rounding = 12,
@@ -139,7 +138,19 @@ hl.config({
     },
     debug = {
       -- disable_logs = false
-    }
+    },
+    plugin = {
+        hyprexpo = {
+            --columns = 3,
+            --gaps_in = 5,
+            -- gaps_out = 0,
+            -- bg_col = "rgb(111111)",
+            -- workspace_method = "center current",
+            -- gesture_distance = 200,
+            --cancel_key = "escape",
+            --show_cursor = 1,
+        },
+    },
     --  plugin = {
     --    hyprfocus = {
     --      mode = "shrink",
