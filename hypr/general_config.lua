@@ -80,10 +80,10 @@ hl.config({
         always_keep_position = true
     },
     scrolling = {
-        column_width = 0.7,
+        column_width = 0.5,
         wrap_focus = true,
-        --follow_focus = true,
-        focus_fit_method = 0,
+        follow_focus = true,
+        focus_fit_method = 1,
         follow_min_visible = 1.0
     },
    group = {
@@ -129,7 +129,8 @@ hl.config({
         allow_session_lock_restore = true
     },
     binds = {
-      hide_special_on_workspace_change = true
+      hide_special_on_workspace_change = true,
+      movefocus_cycles_groupfirst = true,
     },
     render = {
         direct_scanout = 1,

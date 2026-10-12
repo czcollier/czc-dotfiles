@@ -11,7 +11,9 @@ in {
   home.packages = with pkgs; [
     quickshell-custom
     inputs.noctalia.packages.${system}.default
-    inputs.hyprland.packages.${system}.hyprland
+    #inputs.hyprland.packages.${system}.hyprland
+    inputs.hyprdynamicmonitors.packages.${system}.default
+    pkgs.hyprland
     inputs.nix-gl-host.defaultPackage.${system}
     dart-sass
     libnotify
@@ -51,7 +53,8 @@ in {
   };
 
   wayland.windowManager.hyprland = {
-    package = inputs.hyprland.packages.${system}.hyprland;
+    #package = inputs.hyprland.packages.${system}.hyprland;
+    package = pkgs.hyprland;
     enable = true;
     configType = "lua";
     extraConfig = ''

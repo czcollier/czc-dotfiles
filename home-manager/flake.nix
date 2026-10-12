@@ -3,7 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    hyprland.url = "github:hyprwm/Hyprland/v0.56.2";
+    hyprdynamicmonitors.url = "github:fiffeek/hyprdynamicmonitors";
+    #hyprland.url = "github:hyprwm/Hyprland/v0.56.2";
     nix-gl-host.url = "github:numtide/nix-gl-host";
 
     quickshell = {
@@ -18,13 +19,13 @@
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins/v0.56.0";
-      inputs.hyprland.follows = "hyprland";
-    };
+    #hyprland-plugins = {
+    #  url = "github:hyprwm/hyprland-plugins";
+    #  inputs.hyprland.follows = "hyprland";
+    #};
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, hyprdynamicmonitors, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};

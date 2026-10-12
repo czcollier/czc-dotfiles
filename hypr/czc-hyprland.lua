@@ -42,11 +42,14 @@ hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
 -- This ensures Hyprland, DBus, systemd, and Noctalia all inherit the exact same string
 hl.env("XDG_DATA_DIRS", home_dir .. "/.local/share:" .. home_dir .. "/.local/state/nix/profiles/profile/share:/usr/local/share:/usr/share")
 
+hl.env("GNUBBY_PROMPT", "/home/czcollier/bin/gnubby-notify-prompt")
+
 hl.on("hyprland.start", function ()
   -- 2. Sync DBus/Systemd and restart portals sequentially
   -- Wrapping this in 'bash -c' with '&&' guarantees the DBus environment updates 
   -- entirely BEFORE the portals are told to restart.
-  hl.exec_cmd("bash -c 'dbus-update-activation-environment --systemd SSH_AUTH_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_DATA_DIRS XDG_SESSION_TYPE XDG_SESSION_DESKTOP && systemctl --user restart xdg-desktop-portal-hyprland xdg-desktop-portal'")
+  hl.exec_cmd("bash -c 'dbus-update-activation-environment --systemd GNUBBY_PROMPT SSH_AUTH_SOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_DATA_DIRS XDG_SESSION_TYPE XDG_SESSION_DESKTOP && systemctl --user restart xdg-desktop-portal-hyprland xdg-desktop-portal'")
+  hl.exec_cmd("systemctl --user import-environment GNUBBY_PROMPT WAYLAND_DISPLAY XDG_RUNTIME_DIR")
 
   -- 3. Boot agents
   hl.exec_cmd("/usr/lib/x86_64-linux-gnu/libexec/polkit-kde-authentication-agent-1")

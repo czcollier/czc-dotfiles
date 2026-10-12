@@ -104,11 +104,48 @@ hl.bind("SUPER + CTRL + L", hl.dsp.focus({ workspace = "e+1" }), { description =
 hl.bind("SUPER + CTRL + mouse:272", hl.dsp.focus({ workspace = "e-1" }), { description = "focus previous workspace via mouse" })
 hl.bind("SUPER + CTRL + mouse:273", hl.dsp.focus({ workspace = "e+1" }), { description = "focus next workspace via mouse" })
 
-hl.bind("SUPER + CTRL + 7", hl.dsp.focus({ workspace = "1" }), { description = "focus workspace 1" })
-hl.bind("SUPER + CTRL + 8", hl.dsp.focus({ workspace = "2" }), { description = "focus workspace 2" })
-hl.bind("SUPER + CTRL + 9", hl.dsp.focus({ workspace = "3" }), { description = "focus workspace 3" })
-hl.bind("SUPER + CTRL + 0", hl.dsp.focus({ workspace = "4" }), { description = "focus workspace 4" })
-hl.bind("SUPER + CTRL + MINUS", hl.dsp.focus({ workspace = "5" }), { description = "focus workspace 5" })
+for i = 1, 4 do
+  hl.bind("SUPER + CTRL + " .. tostring((i + 6) % 10), function()
+    hl.animation({ leaf = "workspaces", enabled = false })
+    hl.dispatch(hl.dsp.focus({workspace = tostring(i) }))
+    hl.timer(function()
+      hl.animation({
+        leaf = "workspaces",
+        enabled = true,
+        speed = 6,
+        style = "slidefade 10%",
+        bezier = "ease_out_quart", 
+      })
+    end, { timeout = 100, type = "oneshot" })
+  end)
+end
+
+function bind_workspace_jump(key, workspace)
+  hl.bind("CTRL + ALT + " .. key, function()
+    hl.animation({ leaf = "workspaces", enabled = false })
+    hl.dispatch(hl.dsp.focus({workspace = workspace }))
+    hl.timer(function()
+      hl.animation({
+        leaf = "workspaces",
+        enabled = true,
+        speed = 6,
+        style = "slidefade 10%",
+        bezier = "ease_out_quart", 
+      })
+    end, { timeout = 100, type = "oneshot" })
+  end)
+end
+
+
+bind_workspace_jump("J", "1")
+bind_workspace_jump("K", "2")
+bind_workspace_jump("L", "3")
+bind_workspace_jump("semicolon", "4")
+--hl.bind("SUPER + CTRL + 7", hl.dsp.focus({ workspace = "1" }), { description = "focus workspace 1" })
+--hl.bind("SUPER + CTRL + 8", hl.dsp.focus({ workspace = "2" }), { description = "focus workspace 2" })
+--hl.bind("SUPER + CTRL + 9", hl.dsp.focus({ workspace = "3" }), { description = "focus workspace 3" })
+--hl.bind("SUPER + CTRL + 0", hl.dsp.focus({ workspace = "4" }), { description = "focus workspace 4" })
+--hl.bind("SUPER + CTRL + MINUS", hl.dsp.focus({ workspace = "5" }), { description = "focus workspace 5" })
 
 --- monitor focus ---
 hl.bind("CTRL + ALT + H", hl.dsp.focus({ monitor = "-1" }), { description = "focus previous monitor" })
@@ -147,8 +184,8 @@ hl.bind("SUPER + EQUAL", hl.dsp.layout("colresize +conf"), { description = "incr
 hl.bind("SUPER + G", hl.dsp.group.toggle(), { description = "toggle window group" })
 hl.bind("SUPER + I", hl.dsp.submap("group"), { description = "enter group submap" })
 hl.bind("SUPER + O", hl.dsp.window.move({ out_of_group = true }), { description = "move window out of group" })
-hl.bind("SUPER + N", hl.dsp.group.next(), { description = "focus next window in group" })
-hl.bind("SUPER + P", hl.dsp.group.prev(), { description = "focus previous window in group" })
+-- hl.bind("SUPER + N", hl.dsp.group.next(), { description = "focus next window in group" })
+--hl.bind("SUPER + P", hl.dsp.group.prev(), { description = "focus previous window in group" })
 hl.bind("SUPER + U", hl.dsp.group.lock_active(), { description = "lock active group" })
 
 hl.define_submap("group", "reset", function()
@@ -417,7 +454,7 @@ local function toggle_special_magic(magic_name)
             hl.dispatch(hl.dsp.window.move({ window = magic_win, workspace = "special:magic_" .. magic_name, follow = false }))
         end
     else
-        local tmux_cmd = "tmux new-session -A -s " .. magic_name
+        local tmux_cmd = "tmx2 new-session -A -s " .. magic_name
         hl.exec_cmd("foot -a magic_" .. magic_name .. " " .. tmux_cmd)
     end
 end
@@ -469,15 +506,15 @@ hl.bind("SUPER + W", function()
         layout = layouts[next_idx] 
     })
     
-    local replace_str = "foo "
-    if last_layout_msg_id == "" then
-    else
-      local replace_str = "-r " .. last_layout_msg_id .. " "
-    end
+    --local replace_str = "foo "
+    --if last_layout_msg_id == "" then
+    --else
+    --  local replace_str = "-r " .. last_layout_msg_id .. " "
+    --end
 
-    local cmd = string.format("notify-send " .. replace_str .. [[-p "Layout" "%s %s"]], replace_str, layouts[next_idx])
-    last_layout_msg_id = exec_with_stdout(cmd)
-    hl.exec_cmd('notify-send "' .. cmd .. '"')
+    --local cmd = string.format("notify-send " .. replace_str .. [[-p "Layout" "%s %s"]], replace_str, layouts[next_idx])
+    --last_layout_msg_id = exec_with_stdout(cmd)
+    --hl.exec_cmd('notify-send "' .. cmd .. '"')
 end, { description = "Cycle workspace layout" })
 
 

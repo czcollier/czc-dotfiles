@@ -1,12 +1,20 @@
 hl.gesture({
   fingers = 3,
+  mods = "CTRL + SUPER",
   direction = "horizontal",
   action = "workspace"
 })
 
 hl.gesture({
   fingers = 3,
-  mods = "ALT",
+  mods = "SUPER",
+  direction = "horizontal",
+  action = "scroll_move"
+})
+
+hl.gesture({
+  fingers = 3,
+  mods = "SUPER + SHIFT",
   direction = "left",
   action = function()
     hl.dispatch(hl.dsp.window.move({ direction = "left" }))
@@ -15,7 +23,7 @@ hl.gesture({
 
 hl.gesture({
   fingers = 3,
-  mods = "ALT",
+  mods = "SUPER + SHIFT",
   direction = "right",
   action = function()
     hl.dispatch(hl.dsp.window.move({ direction = "right" }))
@@ -24,7 +32,7 @@ hl.gesture({
 
 hl.gesture({
   fingers = 3,
-  mods = "ALT",
+  mods = "SUPER + SHIFT",
   direction = "up",
   action = function()
     hl.dispatch(hl.dsp.window.move({ direction = "up" }))
@@ -33,7 +41,7 @@ hl.gesture({
 
 hl.gesture({
   fingers = 3,
-  mods = "ALT",
+  mods = "SUPER + SHIFT",
   direction = "down",
   action = function()
     hl.dispatch(hl.dsp.window.move({ direction = "down" }))
