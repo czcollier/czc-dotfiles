@@ -299,16 +299,27 @@ hl.bind("CTRL + SHIFT + BRACKETRIGHT", function()
 end, { repeating = true, description = "increase window opacity" })
 
 
---- temporarily make window transparent ---
+--- temporarily make window transparent on hold ---
 hl.bind("CTRL + SHIFT + O", function()
-  hl.dispatch(hl.dsp.window.set_prop({prop = "opacity", value = 0.5}))
-  hl.dispatch(hl.dsp.window.set_prop({prop = "no_blur", value = 1 }))
-end, { description = "make window temporarily transparent" })
+    -- On press: save current opacity, drop to 0.5, and kill blur for clarity
+    local win = hl.get_active_window()
+    if win and win.address then
+        window_opacities[win.address] = win.opacity or 1.0
+        hl.dispatch(hl.dsp.window.set_prop({ window = "address:" .. win.address, prop = "opacity", value = "0.5" }))
+        hl.dispatch(hl.dsp.window.set_prop({ window = "address:" .. win.address, prop = "no_blur", value = "1" }))
+    end
+end, { description = "make window temporarily transparent on hold" })
 
 hl.bind("CTRL + SHIFT + O", function()
-  adjust_active_opacity(0)
-  hl.dispatch(hl.dsp.window.set_prop({prop = "no_blur", value = 0 }))
-end, { release = true, description = "restore window opacity" })
+    -- On release: restore the exact prior opacity and re-enable blur
+    local win = hl.get_active_window()
+    if win and win.address then
+        local original_opacity = window_opacities[win.address] or 1.0
+        hl.dispatch(hl.dsp.window.set_prop({ window = "address:" .. win.address, prop = "opacity", value = tostring(original_opacity) }))
+        hl.dispatch(hl.dsp.window.set_prop({ window = "address:" .. win.address, prop = "no_blur", value = "0" }))
+    end
+end, { release = true, description = "restore window opacity on release" })
+
 
 --- saturation adjustment ---
 local memory_saturation = 100
@@ -568,7 +579,7 @@ hl.bind("CTRL + SHIFT + ALT + 4", function()
 end, { description = "Move all windows from current workspace to workspace 4" })
 
 -- Safely swap the current workspace to the alternative monitor
-hl.bind("CTRL + SHIFT + ALT + M", function()
+hl.bind("CTRL + SHIFT + ALT + S", function()
     local active_ws = hl.get_active_workspace()
     if not active_ws then return end
     local current_mon = active_ws.monitor.name
