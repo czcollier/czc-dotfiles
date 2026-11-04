@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     hyprdynamicmonitors.url = "github:fiffeek/hyprdynamicmonitors";
-    #hyprland.url = "github:hyprwm/Hyprland/v0.56.2";
+    hyprland.url = "github:hyprwm/Hyprland/v0.57.0";
     nix-gl-host.url = "github:numtide/nix-gl-host";
 
     quickshell = {

@@ -1,6 +1,7 @@
 local brightness = require("brightness")
 local saturation = require("lib/saturation")
 local google_pwas = require("google_pwas")
+local dev_apps = require("dev_apps")
 
 -- ==========================================
 -- Bindings
@@ -20,6 +21,7 @@ local saturationIncrement = 10
 hl.bind("SUPER + SLASH", hl.dsp.exec_cmd(noctalia_ipc .. " plugin:keybind-cheatsheet toggle"), { description = "toggle the keybind cheatsheet" })
 hl.bind("SUPER + SPACE", hl.dsp.exec_cmd(noctalia_ipc .. "panel-toggle launcher"), { description = "toggle noctalia app launcher" })
 hl.bind("ALT + TAB", hl.dsp.exec_cmd(noctalia_ipc .. "window-switcher"))
+hl.bind("ALT + C", hl.dsp.exec_cmd(noctalia_ipc .. "panel-toggle clipboard"))
 hl.bind("SUPER + Q", hl.dsp.window.close(), { description = "close the current window" })
 
 hl.bind("SUPER + ALT + M",
@@ -32,6 +34,7 @@ hl.bind("SUPER + ALT + L", hl.dsp.exec_cmd("/usr/bin/hyprlock"), { description =
 hl.bind("SUPER + ALT + S", hl.dsp.exec_cmd(noctalia_ipc .. 'screenshot-region'), { description = "take an interactive screenshot" })
 hl.bind("SUPER + ALT + C", hl.dsp.exec_cmd(noctalia_ipc .. " panel-toggle clipboard"), { description = "open clipboard manager" })
 hl.bind( "SUPER + ALT + P", function() google_pwas.launch_or_focus_pwas() end)
+hl.bind( "SUPER + ALT + D", function() dev_apps.launch_or_focus_dev_apps() end)
 
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),   { mouse = true, description = "drag window" })
 hl.bind("SUPER + ALT + mouse:272", hl.dsp.window.resize(), { mouse = true, description = "resize window" })
@@ -137,15 +140,15 @@ function bind_workspace_jump(key, workspace)
 end
 
 
-bind_workspace_jump("J", "1")
-bind_workspace_jump("K", "2")
-bind_workspace_jump("L", "3")
-bind_workspace_jump("semicolon", "4")
---hl.bind("SUPER + CTRL + 7", hl.dsp.focus({ workspace = "1" }), { description = "focus workspace 1" })
---hl.bind("SUPER + CTRL + 8", hl.dsp.focus({ workspace = "2" }), { description = "focus workspace 2" })
---hl.bind("SUPER + CTRL + 9", hl.dsp.focus({ workspace = "3" }), { description = "focus workspace 3" })
---hl.bind("SUPER + CTRL + 0", hl.dsp.focus({ workspace = "4" }), { description = "focus workspace 4" })
---hl.bind("SUPER + CTRL + MINUS", hl.dsp.focus({ workspace = "5" }), { description = "focus workspace 5" })
+bind_workspace_jump("U", "1")
+bind_workspace_jump("I", "2")
+bind_workspace_jump("O", "3")
+bind_workspace_jump("P", "4")
+
+hl.bind("SHIFT + CTRL + ALT + J", hl.dsp.window.move({ workspace = "1" }), { description = "move window to workspace 1" })
+hl.bind("SHIFT + CTRL + ALT + K", hl.dsp.window.move({ workspace = "2" }), { description = "move window to workspace 2" })
+hl.bind("SHIFT + CTRL + ALT + L", hl.dsp.window.move({ workspace = "3" }), { description = "move window to workspace 3" })
+hl.bind("SHIFT + CTRL + ALT + semicolon", hl.dsp.window.move({ workspace = "4" }), { description = "move window to workspace 4" })
 
 --- monitor focus ---
 hl.bind("CTRL + ALT + H", hl.dsp.focus({ monitor = "-1" }), { description = "focus previous monitor" })
@@ -158,15 +161,14 @@ hl.bind("SUPER + CTRL + SHIFT + L", hl.dsp.window.move({ workspace = "+1" }), { 
 hl.bind("SUPER + CTRL + SHIFT + mouse:272", hl.dsp.window.move({ workspace = "-1" }), { description = "move window to previous workspace via mouse" })
 hl.bind("SUPER + CTRL + SHIFT + mouse:273", hl.dsp.window.move({ workspace = "+1" }), { description = "move window to next workspace via mouse" })
 
--- jump window directly to workspace - do not follow --
+--- jump window directly to workspace - do not follow ---
 hl.bind("SUPER + CTRL + SHIFT + 7", hl.dsp.window.move({ workspace = "1", follow = false }), { description = "move window to workspace 1" })
 hl.bind("SUPER + CTRL + SHIFT + 8", hl.dsp.window.move({ workspace = "2", follow = false }), { description = "move window to workspace 2" })
 hl.bind("SUPER + CTRL + SHIFT + 9", hl.dsp.window.move({ workspace = "3", follow = false }), { description = "move window to workspace 3" })
 hl.bind("SUPER + CTRL + SHIFT + 0", hl.dsp.window.move({ workspace = "4", follow = false }), { description = "move window to workspace 4" })
 hl.bind("SUPER + CTRL + SHIFT + v", hl.dsp.window.move({ workspace = "10", follow = false }), { description = "move window to workspace 10" })
 
-
-
+--- move workspaces between monitors ---
 hl.bind("CTRL + SHIFT + ALT + L", hl.dsp.workspace.move({ monitor = "+1"}), { description = "move workspace to the next monitor" })
 hl.bind("CTRL + SHIFT + ALT + H", hl.dsp.workspace.move({ monitor = "-1"}), { description = "move workspace to the previous monitorleft" })
 hl.bind("CTRL + SHIFT + ALT + M", hl.dsp.workspace.swap_monitors({monitor1 = "eDP-1", monitor2 = "DP-1"}), { description = "swap" })
@@ -184,9 +186,9 @@ hl.bind("SUPER + EQUAL", hl.dsp.layout("colresize +conf"), { description = "incr
 hl.bind("SUPER + G", hl.dsp.group.toggle(), { description = "toggle window group" })
 hl.bind("SUPER + I", hl.dsp.submap("group"), { description = "enter group submap" })
 hl.bind("SUPER + O", hl.dsp.window.move({ out_of_group = true }), { description = "move window out of group" })
--- hl.bind("SUPER + N", hl.dsp.group.next(), { description = "focus next window in group" })
---hl.bind("SUPER + P", hl.dsp.group.prev(), { description = "focus previous window in group" })
-hl.bind("SUPER + U", hl.dsp.group.lock_active(), { description = "lock active group" })
+hl.bind("SUPER + N", hl.dsp.group.next(), { description = "focus next window in group" })
+hl.bind("SUPER + P", hl.dsp.group.prev(), { description = "focus previous window in group" })
+hl.bind("SUPER + U", hl.dsp.group.lock(), { description = "lock active group" })
 
 hl.define_submap("group", "reset", function()
   hl.bind("H", hl.dsp.window.move({ into_group = "left" }), { description = "move into group left" })
@@ -195,6 +197,8 @@ hl.define_submap("group", "reset", function()
   hl.bind("L", hl.dsp.window.move({ into_group = "right" }), { description = "move into group right" }) -- Bring it to the top
   hl.bind("escape", hl.dsp.submap("reset"), { description = "exit group submap" })
 end)
+
+
 
 
 hl.define_submap("movewindow", function()
@@ -418,7 +422,6 @@ hl.define_submap("hdn2", function()
     end
   end, {
     mouse = true,
-    click = true,
     description = "restore selected hidden window via mouse" })
 end)
 
@@ -490,7 +493,7 @@ end
 local last_layout_msg_id = ""
 
 local layouts = { "dwindle", "master", "scrolling", "monocle" }
-hl.bind("SUPER + W", function()
+hl.bind("SUPER + ALT + W", function()
     local wa = hl.get_active_workspace()
     if not wa then return end
     local idx = 0

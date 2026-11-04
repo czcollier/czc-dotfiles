@@ -5,6 +5,7 @@ local utils = require("utils")
 local M = {}
 
 local logfile = "/tmp/lid.log"
+local is_enforcing = false
 
 -- Read physical lid state directly from ACPI
 function M.is_lid_closed()
@@ -42,21 +43,28 @@ local should_disable_edp1 = M.is_lid_closed() and M.is_external_active()
 
 -- Define monitors with correct initial state
 hl.monitor({ output = "eDP-1", mode = "preferred", position = "0x0", scale = 1, disabled = should_disable_edp1 })
-hl.monitor({ output = "DP-1", mode = "preferred", position = "auto-right", scale = 1 })
+hl.monitor({ output = "DP-1", mode = "preferred", position = "-1024x-2160", scale = 1 })
 
 -- Universal state enforcement function (guarantees at least one monitor is always active)
 function M.enforce_display_state(event_name)
-    local lid_closed = M.is_lid_closed()
-    local external_active = M.is_external_active() 
-    local internal_active = M.is_internal_active() 
+    if is_enforcing then return end
+    is_enforcing = true
+    hl.timer(function()
+      local lid_closed = M.is_lid_closed()
+      local external_active = M.is_external_active() 
+      local internal_active = M.is_internal_active() 
 
-    utils.append_to_file("event=" .. tostring(event_name) .. ", lid_closed=" .. tostring(lid_closed) .. ", external_active=" .. tostring(external_active) .. ", internal_active=" .. tostring(internal_active) .. "\n", logfile)
-    if M.is_lid_closed() and M.is_external_active() then
-        hl.exec_cmd("hyprctl eval 'hl.monitor({output=\"eDP-1\", disabled=true})'")
-    else
-        -- Always keep eDP-1 enabled if no external monitor is present, preventing 0-monitor crashes
-        hl.exec_cmd("hyprctl eval 'hl.monitor({output=\"eDP-1\", disabled=false})'")
-    end
+      utils.append_to_file("event=" .. tostring(event_name) .. ", lid_closed=" .. tostring(lid_closed) .. ", external_active=" .. tostring(external_active) .. ", internal_active=" .. tostring(internal_active) .. "\n", logfile)
+      if lid_closed and external_active then
+          -- hl.exec_cmd("hyprctl eval 'hl.monitor({output=\"eDP-1\", disabled=true})'")
+          hl.monitor({ output = "eDP-1", disabled = true })
+      else
+          -- Always keep eDP-1 enabled if no external monitor is present, preventing 0-monitor crashes
+          -- hl.exec_cmd("hyprctl eval 'hl.monitor({output=\"eDP-1\", disabled=false})'")
+          hl.monitor({ output = "eDP-1", disabled = false })
+      end
+      is_enforcing = false
+    end, { timeout = 300, type = "oneshot" })
 end
 
 -- ─── EVENT HANDLERS ──────────────────────────────────────
@@ -65,13 +73,13 @@ end
 hl.bind("switch:on:Lid Switch", function() M.enforce_display_state("lid_closed") end, { locked = true })
 hl.bind("switch:off:Lid Switch", function() M.enforce_display_state("lid_open") end, { locked = true })
 
-hl.on("monitor.added", function()
-  M.enforce_display_state("monitor_added")
-end)
-
-hl.on("monitor.removed", function()
-  M.enforce_display_state("monitor_removed")
-end)
+--hl.on("monitor.added", function()
+--  M.enforce_display_state("monitor_added")
+--end)
+--
+--hl.on("monitor.removed", function()
+--  M.enforce_display_state("monitor_removed")
+--end)
 
 hl.on("config.reloaded", function()
   hl.timer(function()

@@ -2,14 +2,6 @@ local active_border_color = { colors = {"rgba(33cc99ee)", "rgba(00ff99ee)"}, ang
 --active_border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
 local inactive_border_color = { colors = { "rgba(272727bb)" } }
 
-hl.monitor({
-    output = "eDP-1",
-    mode = "preferred",
-    position = "auto",
-    scale = 1
-})
-
-
 hl.config({
     input = {
         kb_layout = "us",
@@ -130,7 +122,7 @@ hl.config({
     },
     binds = {
       hide_special_on_workspace_change = true,
-      movefocus_cycles_groupfirst = true,
+      --movefocus_cycles_groupfirst = true,
     },
     render = {
         direct_scanout = 1,
@@ -152,10 +144,4 @@ hl.config({
             --show_cursor = 1,
         },
     },
-    --  plugin = {
-    --    hyprfocus = {
-    --      mode = "shrink",
-    --      fade_opacity = 0.91,
-    --    }
-    --  },
 })
