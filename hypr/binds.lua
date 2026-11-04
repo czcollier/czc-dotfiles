@@ -20,7 +20,6 @@ local saturationIncrement = 10
 hl.bind("SUPER + SLASH", hl.dsp.exec_cmd(noctalia_ipc .. " plugin:keybind-cheatsheet toggle"), { description = "toggle the keybind cheatsheet" })
 hl.bind("SUPER + SPACE", hl.dsp.exec_cmd(noctalia_ipc .. "panel-toggle launcher"), { description = "toggle noctalia app launcher" })
 hl.bind("ALT + TAB", hl.dsp.exec_cmd(noctalia_ipc .. "window-switcher"))
-hl.bind("ALT + C", hl.dsp.exec_cmd(noctalia_ipc .. "panel-toggle clipboard"))
 hl.bind("SUPER + Q", hl.dsp.window.close(), { description = "close the current window" })
 
 hl.bind("SUPER + ALT + M",
@@ -144,10 +143,10 @@ bind_workspace_jump("I", "2")
 bind_workspace_jump("O", "3")
 bind_workspace_jump("P", "4")
 
-hl.bind("SHIFT + CTRL + ALT + J", hl.dsp.window.move({ workspace = "1" }), { description = "move window to workspace 1" })
-hl.bind("SHIFT + CTRL + ALT + K", hl.dsp.window.move({ workspace = "2" }), { description = "move window to workspace 2" })
-hl.bind("SHIFT + CTRL + ALT + L", hl.dsp.window.move({ workspace = "3" }), { description = "move window to workspace 3" })
-hl.bind("SHIFT + CTRL + ALT + semicolon", hl.dsp.window.move({ workspace = "4" }), { description = "move window to workspace 4" })
+hl.bind("CTRL + SHIFT + ALT + U", hl.dsp.window.move({ workspace = "1" }), { description = "move window to workspace 1" })
+hl.bind("CTRL + SHIFT + ALT + I", hl.dsp.window.move({ workspace = "2" }), { description = "move window to workspace 2" })
+hl.bind("CTRL + SHIFT + ALT + O", hl.dsp.window.move({ workspace = "3" }), { description = "move window to workspace 3" })
+hl.bind("CTRL + SHIFT + ALT + P", hl.dsp.window.move({ workspace = "4" }), { description = "move window to workspace 4" })
 
 --- monitor focus ---
 hl.bind("CTRL + ALT + H", hl.dsp.focus({ monitor = "-1" }), { description = "focus previous monitor" })
