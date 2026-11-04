@@ -1,4 +1,3 @@
-local brightness = require("brightness")
 local saturation = require("lib/saturation")
 local google_pwas = require("google_pwas")
 local dev_apps = require("dev_apps")
@@ -338,8 +337,8 @@ hl.bind("SUPER + SHIFT + S", function() saturation.toggle_sunlight_mode() end, {
 -- media ---
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"), { description = "raise audio volume" })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { description = "lower audio volume" })
-hl.bind("XF86MonBrightnessUp", function() brightness.adjust("+") end, { description = "increase screen brightness" })
-hl.bind("XF86MonBrightnessDown", function() brightness.adjust("-") end, { description = "decrease screen brightness" })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set 5%+"), { description = "increase screen brightness" })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%-"), { description = "decrease screen brightness" })
 hl.bind("SUPER + XF86MonBrightnessUp", function() step_saturation("up") end, { repeating = true, description = "increase color saturation" })
 hl.bind("SUPER + XF86MonBrightnessDown", function() step_saturation("down") end, { repeating = true, description = "decrease color saturation" })
 

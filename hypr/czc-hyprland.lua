@@ -1,4 +1,3 @@
-local brightness = require("brightness")
 local lid = require("lid3")
 local general = require("general_config")
 local binds = require("binds")
