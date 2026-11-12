@@ -5,6 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     hyprdynamicmonitors.url = "github:fiffeek/hyprdynamicmonitors";
     hyprland.url = "github:hyprwm/Hyprland/v0.57.2";
+    #hyprland.url = "github:hyprwm/Hyprland/815585bb8197f9bec5e0fc5cd2d307a7b135e015";
     nix-gl-host.url = "github:numtide/nix-gl-host";
 
     quickshell = {
