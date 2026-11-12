@@ -1,4 +1,4 @@
-local lid = require("lid3")
+local lid = require("lid4")
 local general = require("general_config")
 local binds = require("binds")
 local rules = require("rules")
@@ -54,7 +54,7 @@ hl.on("hyprland.start", function ()
   hl.exec_cmd("/usr/lib/x86_64-linux-gnu/libexec/polkit-kde-authentication-agent-1")
   
   -- 4. Boot background services
-  -- hl.exec_cmd("hypridle")
+  hl.exec_cmd("hypridle")
   hl.exec_cmd("wl-paste --watch cliphist store")
   
   -- 5. Boot Noctalia

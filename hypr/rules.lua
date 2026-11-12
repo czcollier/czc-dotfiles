@@ -61,6 +61,15 @@ hl.window_rule {
 }
 
 hl.window_rule {
+    name = "video_player",
+    match = {
+      class = "mpv"
+    },
+    float = true,
+    size = "900 700"
+}
+
+hl.window_rule {
     name = "file_browser",
     match = {
       class = "org.gnome.Nautilus"
