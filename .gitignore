@@ -20,3 +20,4 @@
 !/noctalia
 !/noctalia/**/*
 noctalia/plugins
+noctalia/bin
