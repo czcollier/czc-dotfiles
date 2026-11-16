@@ -122,14 +122,14 @@ for i = 1, 4 do
 end
 
 function bind_workspace_jump(key, workspace)
-  hl.bind("CTRL + ALT + " .. key, function()
+  hl.bind("SUPER + CTRL + " .. key, function()
     hl.animation({ leaf = "workspaces", enabled = false })
     hl.dispatch(hl.dsp.focus({workspace = workspace }))
     hl.timer(function()
       hl.animation({
         leaf = "workspaces",
         enabled = true,
-        speed = 6,
+        speed = 3,
         style = "slidefade 10%",
         bezier = "ease_out_quart", 
       })
@@ -374,7 +374,8 @@ hl.bind("SUPER + TAB", function()
   local sws = hl.get_workspace("special:hidden")
   if sws and not sws.active then
     hl.dispatch(hl.dsp.workspace.toggle_special("hidden"))
-    hl.dispatch(hl.dsp.submap("hdn2"))
+    -- this is redundant since listening for hidden workspace
+    -- hl.dispatch(hl.dsp.submap("hdn2"))
   end
 end, { description = "toggle hidden workspace submap" })
 
@@ -395,10 +396,9 @@ local select_from_hidden = (function(ws_name)
   hl.dispatch(hl.dsp.submap("reset"))
 end)
 
-hl.bind("SUPER + RETURN", function()
-  select_from_hidden("hidden")
-end, { description = "select window from hidden workspace" })
-
+--hl.bind("SUPER + RETURN", function()
+--  select_from_hidden("hidden")
+--end, { description = "select window from hidden workspace" })
 
 local function is_cursor_in_window(window)
   local cursor = hl.get_cursor_pos()
@@ -423,7 +423,7 @@ hl.define_submap("hdn2", function()
   hl.bind("SUPER + RETURN", function()
     select_from_hidden("hidden")
   end, { description = "restore selected hidden window" })
-
+  
   hl.bind("mouse:272", function()
     local active_win = hl.get_active_window()
     if is_cursor_in_window(active_win) then
@@ -440,7 +440,15 @@ hl.define_submap("hdn_select", function()
   end, { release = true, description = "select window from hidden workspace" })
 end)
 
---- special magic terminals ---
+-- listen for special workspace becoming active 
+hl.on("workspace.special_active", function(workspace, monitor)
+    if workspace and workspace.name == "special:hidden" then
+        hl.dispatch(hl.dsp.submap("hdn2"))
+    else
+        hl.dispatch(hl.dsp.submap("reset"))
+    end
+end)
+
 
 local function toggle_special_magic(magic_name)
   local windows = hl.get_windows()
@@ -470,6 +478,8 @@ local function toggle_special_magic(magic_name)
         hl.exec_cmd("foot -a magic_" .. magic_name .. " " .. tmux_cmd)
     end
 end
+
+--- special magic terminals ---
 
 hl.define_submap("terms", function()
   hl.bind("H", function()
@@ -518,7 +528,7 @@ hl.bind("SUPER + ALT + W", function()
         layout = layouts[next_idx] 
     })
     
-    --local replace_str = "foo "
+    --local replace_str = " "
     --if last_layout_msg_id == "" then
     --else
     --  local replace_str = "-r " .. last_layout_msg_id .. " "

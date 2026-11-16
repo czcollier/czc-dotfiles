@@ -16,7 +16,7 @@ hl.window_rule {
       class = "magic_home"
     },
     opacity = 0.85,
-    rounding = 2,
+    rounding = 12,
     --no_anim = true,
     border_color = { colors = {"rgba(cc6699ee)", "rgba(cc9966ee)"}, angle = 45 },
 }
@@ -27,7 +27,7 @@ hl.window_rule {
       class = "magic_work"
     },
     opacity = 0.85,
-    rounding = 2,
+    rounding = 12,
     --no_anim = true,
     border_color = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 }
 }
